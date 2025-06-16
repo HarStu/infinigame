@@ -85,8 +85,7 @@ export const verification = pgTable("verification", {
 });
 
 export const game = pgTable('game', {
-  id: text('id').primaryKey(),
-  name: text('name').notNull(),
+  name: text('name').primaryKey(),
   systemPrompt: text('system_prompt').notNull(),
   aiIdentity: text('ai_identity').notNull(),
   userIdentity: text('user_identity').notNull(),
@@ -98,7 +97,7 @@ export const game = pgTable('game', {
 
 export const chat = pgTable('chat', {
   id: text('id').primaryKey(),
-  gameRef: text('game_ref').notNull().references(() => game.id),
+  gameName: text('game_ref').notNull().references(() => game.name),
   owner: text('owner').references(() => user.id),
   createdOn: timestamp().notNull(),
   status: chatResultEnum('chat_result').notNull().default('ongoing')
