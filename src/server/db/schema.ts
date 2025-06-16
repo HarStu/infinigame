@@ -86,11 +86,11 @@ export const verification = pgTable("verification", {
 
 export const game = pgTable('game', {
   name: text('name').primaryKey(),
+  description: text('description').notNull(),
   systemPrompt: text('system_prompt').notNull(),
   aiIdentity: text('ai_identity').notNull(),
-  userIdentity: text('user_identity').notNull(),
   requiredTools: jsonb(),
-  creatorId: text('user_id').notNull().references(() => user.id),
+  creatorId: text('user_id').references(() => user.id),
   timesPlayed: integer().default(0),
   score: integer().default(0)
 })
@@ -107,7 +107,7 @@ export const message = pgTable('message', {
   id: text('id').primaryKey(),
   createdAt: timestamp('created_at').defaultNow(),
   content: text('content').notNull(),
-  reasoning: text('reasoning').notNull(),
+  reasoning: text('reasoning'),
   role: text('role').notNull(),
   data: jsonb(),
   toolInvocations: jsonb(),
