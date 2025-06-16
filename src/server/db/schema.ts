@@ -97,7 +97,7 @@ export const game = pgTable('game', {
 
 export const chat = pgTable('chat', {
   id: text('id').primaryKey(),
-  gameName: text('game_ref').notNull().references(() => game.name),
+  gameName: text('game_name').notNull().references(() => game.name),
   owner: text('owner').references(() => user.id),
   createdOn: timestamp().notNull(),
   status: chatResultEnum('chat_result').notNull().default('ongoing')

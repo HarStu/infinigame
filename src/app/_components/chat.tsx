@@ -1,0 +1,34 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+import { useChat } from '@ai-sdk/react'
+import type { Message } from 'ai'
+import { Loader2 } from 'lucide-react'
+import clsx from 'clsx'
+
+import { useQuery } from '@tanstack/react-query'
+import { api } from '@/trpc/react'
+
+type ChatProps = {
+  id?: string
+  initialMessages?: Message[]
+}
+export default function Page(chatProps: ChatProps) {
+  const { messages, input, handleInputChange, handleSubmit } = useChat({})
+
+  return (
+    <div>
+      {messages.map(message => (
+        <div key={message.id}>
+          {message.role === 'user' ? 'User: ' : 'AI: '}
+          {message.content}
+        </div>
+      ))}
+
+      <form onSubmit={handleSubmit}>
+        <input name="prompt" value={input} onChange={handleInputChange} />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  )
+}

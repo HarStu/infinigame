@@ -40,6 +40,16 @@ export const chatRouter = createTRPCRouter({
         createdOn: new Date(),
         status: 'ongoing'
       })
+    }),
+  getChatWithGame: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx }) => {
+      const chatWithGameRes = await ctx.db.select().from(chat).innerJoin(game, eq(chat.gameName, game.name))
+      if (chatWithGameRes[0]) {
+        return chatWithGameRes[0]
+      } else {
+        throw new Error(`Could not find chat ${chat.id}`)
+      }
     })
 })
 
