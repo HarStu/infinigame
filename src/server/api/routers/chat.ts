@@ -9,7 +9,7 @@ import { eq, asc } from 'drizzle-orm'
 
 const zMessage = z.object({
   id: z.string(),
-  createdAt: z.date().optional(),
+  createdAt: z.coerce.date().optional(),
   content: z.string(),
   reasoning: z.string().optional(),
   role: z.string(),

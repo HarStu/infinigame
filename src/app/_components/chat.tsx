@@ -18,6 +18,7 @@ export function Chat(chatProps: ChatProps) {
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     id: chatProps.id,
     initialMessages: chatProps.initialMessages,
+    sendExtraMessageFields: true,
     generateId: createIdGenerator({
       prefix: 'msgc',
       size: 16,
