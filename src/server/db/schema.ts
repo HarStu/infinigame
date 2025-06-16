@@ -3,13 +3,18 @@
 
 import { sql } from "drizzle-orm";
 import {
+  pgEnum,
   index,
   pgTableCreator,
   pgTable,
   text,
   timestamp,
   boolean,
+  integer,
+  jsonb
 } from "drizzle-orm/pg-core";
+
+export const chatResultEnum = pgEnum("chat_result", ['won', 'lost', 'ongoing'])
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -79,3 +84,34 @@ export const verification = pgTable("verification", {
   updatedAt: timestamp('updated_at').$defaultFn(() => /* @__PURE__ */ new Date())
 });
 
+export const game = pgTable('game', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  systemPrompt: text('system_prompt').notNull(),
+  aiIdentity: text('ai_identity').notNull(),
+  userIdentity: text('user_identity').notNull(),
+  requiredTools: jsonb(),
+  creatorId: text('user_id').notNull().references(() => user.id),
+  timesPlayed: integer().default(0),
+  score: integer().default(0)
+})
+
+export const chat = pgTable('chat', {
+  id: text('id').primaryKey(),
+  gameRef: text('game_ref').notNull().references(() => game.id),
+  owner: text('owner').references(() => user.id),
+  createdOn: timestamp().notNull(),
+  status: chatResultEnum('chat_result').notNull().default('ongoing')
+})
+
+export const message = pgTable('message', {
+  id: text('id').primaryKey(),
+  createdAt: timestamp('created_at').defaultNow(),
+  content: text('content').notNull(),
+  reasoning: text('reasoning').notNull(),
+  role: text('role').notNull(),
+  data: jsonb(),
+  toolInvocations: jsonb(),
+  parts: jsonb(),
+  chatId: text('chat_id').notNull().references(() => chat.id)
+})
