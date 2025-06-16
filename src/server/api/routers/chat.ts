@@ -5,7 +5,18 @@ import type { Message } from 'ai'
 
 import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
 import { game, chat, message } from "@/server/db/schema"
-import { eq } from 'drizzle-orm'
+import { eq, asc } from 'drizzle-orm'
+
+const zMessage = z.object({
+  id: z.string(),
+  createdAt: z.date().optional(),
+  content: z.string(),
+  reasoning: z.string().optional(),
+  role: z.string(),
+  data: z.any().optional(),
+  parts: z.any().optional(),
+  toolInvocations: z.any().optional()
+})
 
 export const chatRouter = createTRPCRouter({
   getGame: publicProcedure
@@ -33,13 +44,15 @@ export const chatRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // include the ownerId if available
       const ownerId = ctx.authSession?.user?.id
+      const chatId = generateId()
       await ctx.db.insert(chat).values({
-        id: generateId(),
+        id: chatId,
         gameName: input.gameName,
         owner: ownerId,
         createdOn: new Date(),
         status: 'ongoing'
       })
+      return chatId
     }),
   getChatWithGame: publicProcedure
     .input(z.object({ id: z.string() }))
@@ -49,6 +62,36 @@ export const chatRouter = createTRPCRouter({
         return chatWithGameRes[0]
       } else {
         throw new Error(`Could not find chat ${chat.id}`)
+      }
+    }),
+  loadMessages: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const msgRes = await ctx.db.select().from(message).where(eq(message.chatId, input.id)).orderBy(asc(message.createdAt))
+      const retrievedMessages: Message[] = msgRes.map(msg => msg as Message)
+    }),
+  saveMessages: publicProcedure
+    .input(z.object({ id: z.string(), messages: z.array(zMessage) }))
+    .mutation(async ({ ctx, input }) => {
+      for (const msg of input.messages) {
+        const insertMsg: typeof message.$inferInsert = {
+          ...msg,
+          chatId: input.id,
+          createdAt: msg.createdAt ?? new Date()
+        }
+
+        await ctx.db
+          .insert(message)
+          .values(insertMsg)
+          .onConflictDoUpdate({
+            target: message.id,
+            set: {
+              content: insertMsg.content,
+              parts: insertMsg.parts,
+              toolInvocations: insertMsg.toolInvocations,
+              createdAt: insertMsg.createdAt
+            }
+          })
       }
     })
 })

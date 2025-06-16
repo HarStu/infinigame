@@ -107,7 +107,7 @@ export const message = pgTable('message', {
   id: text('id').primaryKey(),
   createdAt: timestamp('created_at').defaultNow(),
   content: text('content').notNull(),
-  reasoning: text('reasoning').notNull(),
+  reasoning: text('reasoning'),
   role: text('role').notNull(),
   data: jsonb(),
   toolInvocations: jsonb(),
