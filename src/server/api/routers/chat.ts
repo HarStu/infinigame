@@ -69,6 +69,7 @@ export const chatRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const msgRes = await ctx.db.select().from(message).where(eq(message.chatId, input.id)).orderBy(asc(message.createdAt))
       const retrievedMessages: Message[] = msgRes.map(msg => msg as Message)
+      return retrievedMessages
     }),
   saveMessages: publicProcedure
     .input(z.object({ id: z.string(), messages: z.array(zMessage) }))
