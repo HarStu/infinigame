@@ -13,7 +13,7 @@ type ChatProps = {
   id?: string
   initialMessages?: Message[]
 }
-export default function Page(chatProps: ChatProps) {
+export function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat({})
 
   return (
