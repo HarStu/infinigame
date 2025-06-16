@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
 import type { Message } from 'ai'
+import { createIdGenerator } from 'ai'
 import { Loader2 } from 'lucide-react'
 import clsx from 'clsx'
 
@@ -16,7 +17,11 @@ type ChatProps = {
 export function Chat(chatProps: ChatProps) {
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     id: chatProps.id,
-    initialMessages: chatProps.initialMessages
+    initialMessages: chatProps.initialMessages,
+    generateId: createIdGenerator({
+      prefix: 'msgc',
+      size: 16,
+    }),
   })
 
   return (

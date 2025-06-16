@@ -1,6 +1,6 @@
 import { openai } from '@ai-sdk/openai'
 import { google } from '@ai-sdk/google'
-import { streamText, appendResponseMessages } from 'ai'
+import { streamText, appendResponseMessages, createIdGenerator } from 'ai'
 
 import { api } from '@/trpc/server'
 
@@ -15,6 +15,10 @@ export async function POST(req: Request) {
     model: google('gemini-2.0-flash'),
     system: 'You are a helpful assistant',
     messages,
+    experimental_generateMessageId: createIdGenerator({
+      prefix: 'msgs',
+      size: 16,
+    }),
     async onFinish({ response }) {
       await api.chat.saveMessages({
         id,
