@@ -7,18 +7,7 @@ import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
 import { game, chat, message } from "@/server/db/schema"
 import { eq, asc } from 'drizzle-orm'
 
-const zMessage = z.object({
-  id: z.string(),
-  createdAt: z.coerce.date().optional(),
-  content: z.string(),
-  reasoning: z.string().optional().nullable(),
-  role: z.string(),
-  data: z.any().optional(),
-  parts: z.any().optional(),
-  toolInvocations: z.any().optional()
-})
-
-const zStatus = z.enum(['won', 'lost', 'ongoing'])
+import { zMessage, zStatus } from '@/lib/zod-schemas'
 
 export const chatRouter = createTRPCRouter({
   getGame: publicProcedure
