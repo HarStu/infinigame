@@ -59,7 +59,6 @@ export const chatRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const chatWithGameRes = await ctx.db.select().from(chat).where(eq(chat.id, input.id)).innerJoin(game, eq(chat.gameName, game.name))
       if (chatWithGameRes[0]) {
-        console.log(`Of ${chatWithGameRes.length} returning the following chatWithGame: ${chatWithGameRes[0]}`)
         return chatWithGameRes[0]
       } else {
         throw new Error(`Could not find chat ${chat.id}`)

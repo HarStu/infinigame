@@ -16,11 +16,20 @@ import { modelTools } from '@/lib/game/model-tools'
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  // get the chat id and latest message(s) from the client
-  const { messages, id } = await req.json()
+  // get the chat id and latest message from the client
+  const { message, id } = await req.json()
 
-  // from the chatId, get information about the chat and game
+  // using the chatId, get information about the chat and game
   const chatInfo = await api.chat.getChatWithGame({ id: id })
+
+  // from the database, get previous messages
+  const previousMessages = await api.chat.loadMessages({ id: id })
+
+  // append the new message to the previous messages
+  const messages = appendClientMessage({
+    messages: previousMessages ?? [],
+    message
+  })
 
   // grab system prompt
   const systemPrompt = chatInfo.game.systemPrompt

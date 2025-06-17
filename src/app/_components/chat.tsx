@@ -39,9 +39,9 @@ export function Chat(chatProps: ChatProps) {
         return true
       }
     },
-    // experimental_prepareRequestBody({ messages, id }) {
-    //   return { messages: messages[messages.length - 1], id }
-    // }
+    experimental_prepareRequestBody({ messages, id }) {
+      return { message: messages[messages.length - 1], id }
+    }
 
   })
 
