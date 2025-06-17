@@ -7,18 +7,9 @@ import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
 import { game, chat, message } from "@/server/db/schema"
 import { eq, asc } from 'drizzle-orm'
 
-const zMessage = z.object({
-  id: z.string(),
-  createdAt: z.coerce.date().optional(),
-  content: z.string(),
-  reasoning: z.string().optional().nullable(),
-  role: z.string(),
-  data: z.any().optional(),
-  parts: z.any().optional(),
-  toolInvocations: z.any().optional()
-})
+import { zMessage, zStatus } from '@/lib/zod-schemas'
 
-const zStatus = z.enum(['won', 'lost', 'ongoing'])
+import { generateNewGame } from '@/lib/ai-util'
 
 export const chatRouter = createTRPCRouter({
   getGame: publicProcedure
@@ -112,4 +103,24 @@ export const chatRouter = createTRPCRouter({
           .where(eq(chat.id, input.id))
       }
     }),
+  generateNewGame: publicProcedure
+    .mutation(async ({ ctx }) => {
+      const newGame = await generateNewGame()
+      if (!newGame.object) {
+        throw new Error(`Issue generating new game`)
+      }
+      const insertGame: typeof game.$inferInsert = {
+        ...newGame.object,
+        creatorId: null,
+        timesPlayed: 0,
+        score: 0
+      }
+
+      await ctx.db
+        .insert(game)
+        .values(insertGame)
+
+      return newGame.object.name
+    })
+
 })

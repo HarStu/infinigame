@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
   // append the new message to the previous messages
   const messages = appendClientMessage({
-    messages: previousMessages ?? [],
+    messages: previousMessages,
     message
   })
 

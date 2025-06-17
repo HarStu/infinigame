@@ -18,7 +18,8 @@
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "db:push-games": "bun src/lib/game/push-games.ts"
+    "db:push-games": "bun src/lib/game/push-games.ts",
+    "gengame": "bun src/lib/game/cli-game-gen.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.19",
