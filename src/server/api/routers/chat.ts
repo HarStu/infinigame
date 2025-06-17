@@ -18,6 +18,8 @@ const zMessage = z.object({
   toolInvocations: z.any().optional()
 })
 
+const zStatus = z.enum(['won', 'lost', 'ongoing'])
+
 export const chatRouter = createTRPCRouter({
   getGame: publicProcedure
     .input(z.object({ name: z.string() }))
@@ -94,6 +96,20 @@ export const chatRouter = createTRPCRouter({
             }
           })
       }
-    })
-})
+    }),
+  updateGameStatus: publicProcedure
+    .input(z.object({ id: z.string(), status: zStatus }))
+    .mutation(async ({ ctx, input }) => {
+      const chatRes = await ctx.db.select().from(chat).where(eq(chat.id, input.id))
+      if (chatRes.length !== 1 || chatRes[0] === undefined) {
+        throw new Error(`Could not find chat ${chat.id}`)
+      } else {
+        chatRes[0].status = input.status
 
+        await ctx.db
+          .update(chat)
+          .set(chatRes[0])
+          .where(eq(chat.id, input.id))
+      }
+    }),
+})
