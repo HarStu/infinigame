@@ -26,6 +26,7 @@ export function GenGameButton() {
   } else {
     return (
       <Button className="m-4">
+        generating your game
         <Loader2 className="size-4 animate-spin" />
       </Button>
     )
