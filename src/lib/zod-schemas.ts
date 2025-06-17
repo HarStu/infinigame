@@ -17,6 +17,7 @@ export const zStatus = z.enum(['won', 'lost', 'ongoing'])
 export const zGame = z.object({
   name: z.string(),
   description: z.string(),
+  systemPrompt: z.string(),
   aiIdentity: z.string(),
-  requiredTools: z.tuple([z.literal('winTheGame'), z.literal('loseTheGame')])
+  requiredTools: z.array(z.enum(['winTheGame', 'loseTheGame'])).length(2)
 })

@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
 import { usePathname } from 'next/navigation'
+import { GenGameButton } from '@/components/gen-game-button'
 
 export function Sidebar() {
   const { data: session } = authClient.useSession()
@@ -19,7 +20,7 @@ export function Sidebar() {
     await authClient.signOut()
   }
 
-  const sideBarClass = "flex flex-col gap-4 w-64"
+  const sideBarClass = "flex flex-col w-64"
   const buttonClass = "m-4"
 
   if (!session) {
@@ -39,6 +40,7 @@ export function Sidebar() {
         <Button className={buttonClass} onClick={signOut}>
           Log out
         </Button>
+        <GenGameButton />
       </div>
     )
   }

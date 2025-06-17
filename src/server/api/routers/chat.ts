@@ -9,6 +9,8 @@ import { eq, asc } from 'drizzle-orm'
 
 import { zMessage, zStatus } from '@/lib/zod-schemas'
 
+import { generateNewGame } from '@/lib/ai-util'
+
 export const chatRouter = createTRPCRouter({
   getGame: publicProcedure
     .input(z.object({ name: z.string() }))
@@ -101,4 +103,24 @@ export const chatRouter = createTRPCRouter({
           .where(eq(chat.id, input.id))
       }
     }),
+  generateNewGame: publicProcedure
+    .mutation(async ({ ctx }) => {
+      const newGame = await generateNewGame()
+      if (!newGame.object) {
+        throw new Error(`Issue generating new game`)
+      }
+      const insertGame: typeof game.$inferInsert = {
+        ...newGame.object,
+        creatorId: null,
+        timesPlayed: 0,
+        score: 0
+      }
+
+      await ctx.db
+        .insert(game)
+        .values(insertGame)
+
+      return newGame.object.name
+    })
+
 })
