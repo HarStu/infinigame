@@ -1,5 +1,5 @@
 import { api } from '@/trpc/server'
-import { Chat } from '@/app/_components/chat'
+import { Chat } from '@/components/chat'
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   console.log(`Arrived at /chat/[id]`)

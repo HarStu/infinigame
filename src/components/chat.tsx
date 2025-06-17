@@ -5,11 +5,8 @@ import { useChat } from '@ai-sdk/react'
 import type { Message } from 'ai'
 import { createIdGenerator } from 'ai'
 import { Loader2 } from 'lucide-react'
-import clsx from 'clsx'
 
-import { useQuery } from '@tanstack/react-query'
 import { api } from '@/trpc/react'
-import { chat } from '@/server/db/schema'
 
 type ChatProps = {
   id: string
@@ -30,23 +27,28 @@ export function Chat(chatProps: ChatProps) {
       if (toolCall.toolName === 'winTheGame') {
         setGameState('won')
         console.log('You have won')
-        // TODO -- WRITE THIS TO THE DATABASE
+        winGame({ id: chatProps.id, status: 'won' })
         return true
       } else if (toolCall.toolName === 'loseTheGame') {
         setGameState('lost')
         console.log('You have lost')
-        // TODO -- WRITE THIS TO THE DATABASE
+        loseGame({ id: chatProps.id, status: 'lost' })
         return true
       }
     },
-    // experimental_prepareRequestBody({ messages, id }) {
-    //   return { messages: messages[messages.length - 1], id }
-    // }
+    experimental_prepareRequestBody({ messages, id }) {
+      return { message: messages[messages.length - 1], id }
+    }
 
   })
 
   // Retrieve information about the chat and associated game from the API
   const chatInfo = api.chat.getChatWithGame.useQuery({ id: chatProps.id })
+
+  // Setup the mutations we can use in response to tool calls
+  const { mutate: winGame } = api.chat.updateGameStatus.useMutation()
+  const { mutate: loseGame } = api.chat.updateGameStatus.useMutation()
+
 
   // Setup the gameState, which will influence how the UI is rendered
   type GameState = 'won' | 'lost' | 'ongoing'
@@ -67,7 +69,7 @@ export function Chat(chatProps: ChatProps) {
 
   // Setup variables used to modify and style the markup
   let inputPrompt = "say something..."
-  let messageContainerClass = "flex-1 border rounded p-4 mt-4 overflow-y-auto transition-all duration-900 ease-in-out"
+  let messageContainerClass = "border flex-1 rounded p-4 mt-4 overflow-y-auto transition-all duration-900 ease-in-out"
   if (gameState === 'won') {
     messageContainerClass += " border-green-500"
     inputPrompt = 'you won!'
@@ -81,10 +83,14 @@ export function Chat(chatProps: ChatProps) {
   let spinnerClass = "flex items-center transition-all duration-300 ease-in-out h-4"
   spinnerClass += generating ? " opacity-100 h-8 p-1" : " opacity-0"
 
+  // Ref used to ensure that the chat will autoscroll to the bottom as new messages generate
   const bottomRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   return (
-    <div className="flex flex-col flex-1 w-full max-w-md mx-auto h-screen">
+    <div className="flex flex-col w-full h-screen max-w-md mx-auto">
 
       {/* render title and description information */}
       <div className="text-center font-bold">
