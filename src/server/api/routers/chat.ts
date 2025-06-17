@@ -11,7 +11,7 @@ const zMessage = z.object({
   id: z.string(),
   createdAt: z.coerce.date().optional(),
   content: z.string(),
-  reasoning: z.string().optional(),
+  reasoning: z.string().optional().nullable(),
   role: z.string(),
   data: z.any().optional(),
   parts: z.any().optional(),
