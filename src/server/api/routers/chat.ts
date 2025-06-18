@@ -5,7 +5,7 @@ import type { Message } from 'ai'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc'
 import { game, chat, message, rating, user } from "@/server/db/schema"
-import { eq, asc } from 'drizzle-orm'
+import { eq, asc, and } from 'drizzle-orm'
 
 import { zMessage, zStatus, zDbGame, zRate } from '@/lib/schemas'
 
@@ -154,6 +154,25 @@ export const chatRouter = createTRPCRouter({
 
       if (!rateRes[0]) {
         throw new Error(`Error: user ${userId} could not successfully rate game ${input.gameName}`)
+      } else {
+        return rateRes[0]
+      }
+    }),
+  getRating: protectedProcedure
+    .input(z.object({ gameName: z.string() }))
+    .output(zRate.optional())
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.user.id
+      const rateRes = await ctx.db
+        .select()
+        .from(rating)
+        .where(and(
+          eq(rating.userId, userId),
+          eq(rating.gameName, input.gameName)
+        ))
+
+      if (!rateRes[0]) {
+        return undefined
       } else {
         return rateRes[0]
       }
