@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import clsx from 'clsx'
+import { usePathname } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
 import { api } from '@/trpc/react'
@@ -9,9 +9,16 @@ import { api } from '@/trpc/react'
 export function GameRater({ gameName }: { gameName: string }) {
   const [liked, setLiked] = useState<boolean | null>(null)
   const [voteText, setVoteText] = useState<string>('rate this game')
+  const [chatGameName, setChatGameName] = useState<string>()
 
   // Grab an existing rating if already present
   const ratingResult = api.chat.getRating.useQuery({ gameName: gameName })
+
+  // Grab the gameName from the chat
+  const chatId = usePathname().split('/').filter(segment => Boolean(segment)).pop()
+  console.log(`chatId, from URL, is: ${chatId}`)
+
+  const chatResult = api.chat.getChat.useQuery({ id: chatId! })
 
   // Setup mutations that can be used to update the rating
   const { mutateAsync: likeGame } = api.chat.rateGame.useMutation()
@@ -25,22 +32,25 @@ export function GameRater({ gameName }: { gameName: string }) {
     } else if (ratingResult.data?.liked) {
       setLiked(true)
       setVoteText('you like this game')
-
     } else if (!ratingResult.data?.liked) {
       setLiked(false)
       setVoteText('you dislike this game')
     }
   }, [ratingResult.isSuccess])
 
+  useEffect(() => {
+    setChatGameName(chatResult.data?.gameName)
+  }, [chatResult.data])
+
   async function clickLike() {
     if (liked) {
       setLiked(null)
       setVoteText('rate this game')
-      await nullGame({ gameName: gameName, liked: null })
+      await nullGame({ gameName: chatGameName!, liked: null })
     } else {
       setLiked(true)
       setVoteText('you like this game')
-      await likeGame({ gameName: gameName, liked: true })
+      await likeGame({ gameName: chatGameName!, liked: true })
     }
   }
 
@@ -48,11 +58,11 @@ export function GameRater({ gameName }: { gameName: string }) {
     if (liked === false) {
       setLiked(null)
       setVoteText('rate this game')
-      await nullGame({ gameName: gameName, liked: null })
+      await nullGame({ gameName: chatGameName!, liked: null })
     } else {
       setLiked(false)
       setVoteText('you dislike this game')
-      await dislikeGame({ gameName: gameName, liked: false })
+      await dislikeGame({ gameName: chatGameName!, liked: false })
     }
   }
 
@@ -66,7 +76,7 @@ export function GameRater({ gameName }: { gameName: string }) {
     dislikeButtonClass = "m-2 bg-red-700"
   }
 
-  if (ratingResult.isSuccess) {
+  if (chatGameName && ratingResult.isSuccess) {
     return (
       <div className="text-center font-bold my-4">
         {voteText}
