@@ -19,7 +19,7 @@ export const chatRouter = createTRPCRouter({
       if (gameRes[0]) {
         return gameRes[0]
       } else {
-        throw new Error(`Could not find game ${input.name}`)
+        throw new Error(`could not find game ${input.name}`)
       }
     }),
   getChat: publicProcedure
@@ -54,7 +54,7 @@ export const chatRouter = createTRPCRouter({
       if (chatWithGameRes[0]) {
         return chatWithGameRes[0]
       } else {
-        throw new Error(`getChatWithGame: ould not find chat`)
+        throw new Error(`getChatWithGame: could not find chat`)
       }
     }),
   loadMessages: publicProcedure

@@ -18,15 +18,15 @@ export function GameRater({ gameName }: { gameName: string }) {
   const { mutateAsync: nullGame } = api.chat.rateGame.useMutation()
 
   useEffect(() => {
-    if (!ratingResult.data?.liked === null) {
-      setLiked(null)
-      setVoteText('rate this game')
-    } else if (ratingResult.data?.liked) {
+    if (ratingResult.data?.liked) {
       setLiked(true)
       setVoteText('you like this game')
-    } else if (!ratingResult.data?.liked) {
+    } else if (!ratingResult.data?.liked === false) {
       setLiked(false)
       setVoteText('you dislike this game')
+    } else {
+      setLiked(null)
+      setVoteText('rate this game')
     }
   }, [ratingResult.isSuccess])
 
@@ -54,13 +54,13 @@ export function GameRater({ gameName }: { gameName: string }) {
     }
   }
 
-  let likeButtonClass = "m-2 bg-green-500 hover:bg-green-700"
-  let dislikeButtonClass = "m-2 bg-red-500 hover:bg-red-700"
+  let likeButtonClass = "m-2 bg-green-400 hover:bg-green-700"
+  let dislikeButtonClass = "m-2 bg-red-400 hover:bg-red-700"
   if (liked) {
     likeButtonClass = "m-2 bg-green-700"
-    dislikeButtonClass = "m-2 bg-red-300 hover:bg-red-700"
+    dislikeButtonClass = "m-2 bg-red-200 hover:bg-red-700"
   } else if (liked === false) {
-    likeButtonClass = "m-2 bg-green-300 hover:bg-green-700"
+    likeButtonClass = "m-2 bg-green-200 hover:bg-green-700"
     dislikeButtonClass = "m-2 bg-red-700"
   }
 
