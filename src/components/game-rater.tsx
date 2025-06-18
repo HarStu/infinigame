@@ -26,7 +26,7 @@ export function GameRater({ gameName }: { gameName: string }) {
   const { mutateAsync: nullGame } = api.chat.rateGame.useMutation()
 
   useEffect(() => {
-    if (!ratingResult.data || ratingResult.data.liked === null) {
+    if (!ratingResult.data?.liked === null) {
       setLiked(null)
       setVoteText('rate this game')
     } else if (ratingResult.data?.liked) {

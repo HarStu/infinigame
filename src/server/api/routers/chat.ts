@@ -29,7 +29,7 @@ export const chatRouter = createTRPCRouter({
       if (chatRes[0]) {
         return chatRes[0]
       } else {
-        throw new Error(`Could not find chat ${chat.id}`)
+        throw new Error(`getChat: could not find chat`)
       }
     }),
   createChat: publicProcedure
@@ -54,7 +54,7 @@ export const chatRouter = createTRPCRouter({
       if (chatWithGameRes[0]) {
         return chatWithGameRes[0]
       } else {
-        throw new Error(`Could not find chat ${chat.id}`)
+        throw new Error(`getChatWithGame: ould not find chat`)
       }
     }),
   loadMessages: publicProcedure
@@ -93,7 +93,7 @@ export const chatRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const chatRes = await ctx.db.select().from(chat).where(eq(chat.id, input.id))
       if (chatRes.length !== 1 || chatRes[0] === undefined) {
-        throw new Error(`Could not find chat ${chat.id}`)
+        throw new Error(`updateGameStatus: could not find chat`)
       } else {
         chatRes[0].status = input.status
 
