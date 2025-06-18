@@ -119,7 +119,7 @@ export const message = pgTable('message', {
 export const rating = pgTable('rating', {
   gameName: text('game_name').notNull().references(() => game.name),
   userId: text('user_id').notNull().references(() => user.id),
-  liked: boolean().notNull(),
+  liked: boolean(),
 }, (table) => [
   primaryKey({ columns: [table.gameName, table.userId] }),
 ])

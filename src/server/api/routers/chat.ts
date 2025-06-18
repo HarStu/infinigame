@@ -131,14 +131,14 @@ export const chatRouter = createTRPCRouter({
       return gameRes
     }),
   rateGame: protectedProcedure
-    .input(z.object({ gameName: z.string(), rating: z.boolean() }))
+    .input(z.object({ gameName: z.string(), liked: z.boolean().nullable() }))
     .output(zRate)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.user.id
       const insertRating: typeof rating.$inferInsert = {
         userId: userId,
         gameName: input.gameName,
-        liked: input.rating
+        liked: input.liked
       }
 
       const rateRes = await ctx.db

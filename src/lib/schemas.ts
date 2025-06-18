@@ -37,6 +37,6 @@ export type DbGame = z.infer<typeof zDbGame>
 export const zRate = z.object({
   userId: z.string(),
   gameName: z.string(),
-  liked: z.boolean()
+  liked: z.boolean().nullable()
 })
 export type Rate = z.infer<typeof zRate>

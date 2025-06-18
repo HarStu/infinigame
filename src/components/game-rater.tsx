@@ -5,6 +5,7 @@ import clsx from 'clsx'
 
 import { Button } from '@/components/ui/button'
 import { api } from '@/trpc/react'
+import { game } from '@/server/db/schema'
 
 export function GameRater({ gameName }: { gameName: string }) {
   const [liked, setLiked] = useState<boolean | null>(null)
@@ -13,6 +14,11 @@ export function GameRater({ gameName }: { gameName: string }) {
   // Grab an existing rating if already present
   const ratingResult = api.chat.getRating.useQuery({ gameName: gameName })
 
+  // Setup mutations that can be used to update the rating
+  const { mutateAsync: likeGame } = api.chat.rateGame.useMutation()
+  const { mutateAsync: dislikeGame } = api.chat.rateGame.useMutation()
+  const { mutateAsync: nullGame } = api.chat.rateGame.useMutation()
+
   useEffect(() => {
     if (!ratingResult.data || ratingResult.data.liked === null) {
       setLiked(null)
@@ -20,33 +26,35 @@ export function GameRater({ gameName }: { gameName: string }) {
     } else if (ratingResult.data?.liked) {
       setLiked(true)
       setVoteText('you like this game')
+
     } else if (!ratingResult.data?.liked) {
       setLiked(false)
       setVoteText('you dislike this game')
     }
   }, [ratingResult.isSuccess])
 
-  function clickLike() {
+  async function clickLike() {
     if (liked) {
-      // TODO -- MUTATION! LOADING TILL THEN!
       setLiked(null)
       setVoteText('rate this game')
+      await nullGame({ gameName: gameName, liked: null })
     } else {
-      // TODO -- MUTATION! LOADING TILL THEN!
       setLiked(true)
       setVoteText('you like this game')
+      await likeGame({ gameName: gameName, liked: true })
     }
   }
 
-  function clickDislike() {
+  async function clickDislike() {
     if (!liked) {
-      // TODO -- MUTATION! LOADING TILL THEN!
       setLiked(null)
       setVoteText('rate this game')
+      await nullGame({ gameName: gameName, liked: null })
     } else {
-      // TODO -- MUTATION! LOADING TILL THEN!
+      // SET LOADING
       setLiked(false)
       setVoteText('you dislike this game')
+      await dislikeGame({ gameName: gameName, liked: false })
     }
   }
 
