@@ -7,7 +7,7 @@ import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
 import { game, chat, message } from "@/server/db/schema"
 import { eq, asc } from 'drizzle-orm'
 
-import { zMessage, zStatus } from '@/lib/zod-schemas'
+import { zMessage, zStatus, zDbGame } from '@/lib/zod-schemas'
 
 import { generateNewGame } from '@/lib/ai-util'
 
@@ -121,6 +121,13 @@ export const chatRouter = createTRPCRouter({
         .values(insertGame)
 
       return newGame.object.name
+    }),
+  getTopGames: publicProcedure
+    .input(z.object({ count: z.number() }))
+    .output(z.array(zDbGame))
+    .query(async ({ ctx, input }) => {
+      const gameRes = await ctx.db.select().from(game).orderBy(game.score).limit(input.count)
+      return gameRes
     })
 
 })

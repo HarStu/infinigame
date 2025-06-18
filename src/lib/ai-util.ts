@@ -39,7 +39,7 @@ Return only an object with the following structure:
 \`\`\`ts
 {
   name: string;              // a short, lowercase codename for the game (no spaces or underscores. if it must be multiple words, concatenatethemlikethis)
-  description: string;       // a 1–2 sentence summary of the game's premise, identifying the user's role, ai's role, and user's objective. Addressed to the user
+  description: string;       // a 1 sentence summary of the game's premise, identifying the user's role, ai's role, and user's objective. Addressed to the user
   aiIdentity: string;        // the in-game name/title of the AI character, lowercase
   systemPrompt: string;      // the full system prompt as described above
   requiredTools: ['winTheGame', 'loseTheGame'] // always exactly these two tools
@@ -65,7 +65,7 @@ export async function generateNewGame() {
     model: openai('gpt-4o-mini'),
     schema: zGame,
     prompt: gameGenPrompt,
-    temperature: 1
+    temperature: 1.1
   })
   return newGame
 }
