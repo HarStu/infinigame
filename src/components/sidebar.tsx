@@ -36,7 +36,7 @@ export function Sidebar() {
   const sideBarClass = "flex flex-col w-64 m-4 bg-gray-200 border rounded-2xl"
   const buttonClass = "mx-4 my-2"
 
-  if (!session && chatResult.data) {
+  if (!session) {
     return (
       <div className={sideBarClass}>
 
@@ -49,7 +49,7 @@ export function Sidebar() {
         </div>
       </div>
     )
-  } else {
+  } else if (chatResult.data && chatResult.data.gameName) {
     return (
       <div className={sideBarClass}>
 
@@ -57,7 +57,7 @@ export function Sidebar() {
         <GenGameButton />
 
         {/* current game rating options */}
-        <GameRater gameName={chatResult.data?.gameName!} />
+        <GameRater gameName={chatResult.data.gameName} />
 
         {/* game selection */}
         <div className="text-center font-bold my-4">
