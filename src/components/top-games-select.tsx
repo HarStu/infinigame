@@ -20,9 +20,7 @@ export function TopGamesSelect({ getGameCount, showGameCount }: { getGameCount: 
   if (topGamesResult.isSuccess) {
     // Shuffled the games
     const shuffledGames = [...topGamesResult.data].sort(() => Math.random() - 0.5)
-    const randomGames = shuffledGames.splice(0, showGameCount) as DbGame[]
-
-    console.log(`GAMES PICKED: ${randomGames.map(game => game.name)}`)
+    const randomGames = shuffledGames.splice(0, showGameCount)
 
     return (
       <div className="flex flex-col gap-2 my-4" >
