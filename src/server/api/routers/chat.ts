@@ -160,7 +160,7 @@ export const chatRouter = createTRPCRouter({
     }),
   getRating: protectedProcedure
     .input(z.object({ gameName: z.string() }))
-    .output(zRate.optional())
+    .output(zRate.nullable())
     .query(async ({ ctx, input }) => {
       const userId = ctx.user.id
       const rateRes = await ctx.db
@@ -171,8 +171,8 @@ export const chatRouter = createTRPCRouter({
           eq(rating.gameName, input.gameName)
         ))
 
-      if (!rateRes[0]) {
-        return undefined
+      if (!rateRes[0] || rateRes.length === 0) {
+        return null
       } else {
         return rateRes[0]
       }

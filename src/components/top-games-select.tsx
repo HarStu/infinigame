@@ -42,7 +42,7 @@ export function TopGamesSelect({ getGameCount, showGameCount }: { getGameCount: 
       </div >
     )
 
-    // other returns for other states
+    // returns for loading and error states
   } else if (topGamesResult.isPending) {
     return (
       <div>
