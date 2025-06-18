@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
 import { api } from '@/trpc/react'
-import type { DbGame } from '@/lib/zod-schemas'
+import type { DbGame } from '@/lib/schemas'
 
 
 export function TopGamesSelect({ getGameCount, showGameCount }: { getGameCount: number, showGameCount: number }) {
@@ -42,7 +42,7 @@ export function TopGamesSelect({ getGameCount, showGameCount }: { getGameCount: 
       </div >
     )
 
-    // other returns for other states
+    // returns for loading and error states
   } else if (topGamesResult.isPending) {
     return (
       <div>

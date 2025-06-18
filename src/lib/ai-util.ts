@@ -3,7 +3,7 @@ import { google } from '@ai-sdk/google'
 import { openai } from '@ai-sdk/openai'
 import { z } from 'zod'
 
-import { zGame } from '@/lib/zod-schemas'
+import { zGame } from '@/lib/schemas'
 
 const gameGenPrompt = `
 You are a game designer creating original AI roleplay scenarios where the user must persuade, outwit, or emotionally move a vivid, eccentric character to achieve a goal.

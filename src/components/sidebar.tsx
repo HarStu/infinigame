@@ -3,17 +3,16 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 
-import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
+import { Button } from '@/components/ui/button'
 import { GenGameButton } from '@/components/gen-game-button'
-import { api } from '@/trpc/react'
 import { TopGamesSelect } from '@/components/top-games-select'
+import { GameRater } from '@/components/game-rater'
 
 export function Sidebar() {
   const { data: session } = authClient.useSession()
   const pathname = usePathname()
   const [voteText, setVoteText] = useState('rate this game')
-  const topGames = api.chat.getTopGames.useQuery({ count: 20 })
 
   async function signInWithGoogle() {
     await authClient.signIn.social({
@@ -50,17 +49,8 @@ export function Sidebar() {
         <GenGameButton />
 
         {/* current game rating options */}
-        <div className="text-center font-bold my-4">
-          {voteText}
-          <div className="flex items-center justify-center">
-            <Button className="m-2 bg-green-500 hover:bg-green-700">
-              👍
-            </Button>
-            <Button className="m-2 bg-red-500 hover:bg-red-700">
-              👎
-            </Button>
-          </div>
-        </div>
+        {/* HOW DO I GET THIS THE NAME OF THE GAME WE'RE CURRENTLY PLAYING? */}
+        <GameRater gameName='nixon' />
 
         {/* game selection */}
         <div className="text-center font-bold my-4">
