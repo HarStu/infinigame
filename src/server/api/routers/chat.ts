@@ -3,13 +3,14 @@ import { z } from 'zod'
 import { generateId } from 'ai'
 import type { Message } from 'ai'
 
-import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
-import { game, chat, message } from "@/server/db/schema"
+import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc'
+import { game, chat, message, rating, user } from "@/server/db/schema"
 import { eq, asc } from 'drizzle-orm'
 
-import { zMessage, zStatus, zDbGame } from '@/lib/zod-schemas'
+import { zMessage, zStatus, zDbGame, zRate } from '@/lib/schemas'
 
 import { generateNewGame } from '@/lib/ai-util'
+import { db } from '@/server/db'
 
 export const chatRouter = createTRPCRouter({
   getGame: publicProcedure
@@ -103,7 +104,7 @@ export const chatRouter = createTRPCRouter({
           .where(eq(chat.id, input.id))
       }
     }),
-  generateNewGame: publicProcedure
+  generateNewGame: protectedProcedure
     .mutation(async ({ ctx }) => {
       const newGame = await generateNewGame()
       if (!newGame.object) {
@@ -122,12 +123,39 @@ export const chatRouter = createTRPCRouter({
 
       return newGame.object.name
     }),
-  getTopGames: publicProcedure
+  getTopGames: protectedProcedure
     .input(z.object({ count: z.number() }))
     .output(z.array(zDbGame))
     .query(async ({ ctx, input }) => {
       const gameRes = await ctx.db.select().from(game).orderBy(game.score).limit(input.count)
       return gameRes
-    })
+    }),
+  rateGame: protectedProcedure
+    .input(z.object({ gameName: z.string(), rating: z.boolean() }))
+    .output(zRate)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user.id
+      const insertRating: typeof rating.$inferInsert = {
+        userId: userId,
+        gameName: input.gameName,
+        liked: input.rating
+      }
 
+      const rateRes = await ctx.db
+        .insert(rating)
+        .values(insertRating)
+        .onConflictDoUpdate({
+          target: [rating.gameName, rating.userId],
+          set: {
+            liked: insertRating.liked,
+          }
+        })
+        .returning()
+
+      if (!rateRes[0]) {
+        throw new Error(`Error: user ${userId} could not successfully rate game ${input.gameName}`)
+      } else {
+        return rateRes[0]
+      }
+    })
 })

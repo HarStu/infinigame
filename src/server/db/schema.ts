@@ -2,6 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { sql } from "drizzle-orm";
+import { primaryKey } from "drizzle-orm/pg-core";
 import {
   pgEnum,
   index,
@@ -114,3 +115,11 @@ export const message = pgTable('message', {
   parts: jsonb(),
   chatId: text('chat_id').notNull().references(() => chat.id)
 })
+
+export const rating = pgTable('rating', {
+  gameName: text('game_name').notNull().references(() => game.name),
+  userId: text('user_id').notNull().references(() => user.id),
+  liked: boolean().notNull(),
+}, (table) => [
+  primaryKey({ columns: [table.gameName, table.userId] }),
+])

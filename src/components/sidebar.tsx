@@ -13,7 +13,6 @@ export function Sidebar() {
   const { data: session } = authClient.useSession()
   const pathname = usePathname()
   const [voteText, setVoteText] = useState('rate this game')
-  const topGames = api.chat.getTopGames.useQuery({ count: 20 })
 
   async function signInWithGoogle() {
     await authClient.signIn.social({
