@@ -5,7 +5,7 @@ import type { Message } from 'ai'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc'
 import { game, chat, message, rating, user } from "@/server/db/schema"
-import { eq, asc, and } from 'drizzle-orm'
+import { eq, asc, and, count } from 'drizzle-orm'
 
 import { zMessage, zStatus, zDbGame, zRate } from '@/lib/schemas'
 
@@ -151,6 +151,31 @@ export const chatRouter = createTRPCRouter({
           }
         })
         .returning()
+
+      // with the new rating applied, update the game's score
+      const likes = await ctx.db
+        .select({ count: count() })
+        .from(rating)
+        .where(and(
+          eq(rating.liked, true),
+          eq(rating.gameName, input.gameName)
+        ))
+
+      const dislikes = await ctx.db
+        .select({ count: count() })
+        .from(rating)
+        .where(and(
+          eq(rating.liked, false),
+          eq(rating.gameName, input.gameName)
+        ))
+
+      const newScore = (likes[0]?.count ?? 0) - (dislikes[0]?.count ?? 0)
+
+      await ctx.db
+        .update(game)
+        .set({ score: newScore })
+        .where(eq(game.name, input.gameName))
+
 
       if (!rateRes[0]) {
         throw new Error(`Error: user ${userId} could not successfully rate game ${input.gameName}`)
