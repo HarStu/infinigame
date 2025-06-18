@@ -1,9 +1,9 @@
 'use client'
 
-export default async function Home() {
+export default function Home() {
   return (
     <div>
-      hello world
+      INFINITE GAMES...
     </div>
   )
 

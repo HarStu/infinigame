@@ -19,14 +19,14 @@ export function GenGameButton() {
 
   if (!loading) {
     return (
-      <Button className="m-4" onClick={genNewGame}>
-        Random New Game!
+      <Button className="m-4 mb-2" onClick={genNewGame}>
+        random new game!
       </Button>
     )
   } else {
     return (
-      <Button className="m-4">
-        generating your game
+      <Button className="m-4 mb-2">
+        cooking a new game
         <Loader2 className="size-4 animate-spin" />
       </Button>
     )

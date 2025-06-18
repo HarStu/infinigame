@@ -21,3 +21,15 @@ export const zGame = z.object({
   aiIdentity: z.string(),
   requiredTools: z.array(z.enum(['winTheGame', 'loseTheGame'])).length(2)
 })
+
+export const zDbGame = z.object({
+  name: z.string(),
+  description: z.string(),
+  systemPrompt: z.string(),
+  aiIdentity: z.string(),
+  requiredTools: z.any(),
+  creatorId: z.string().nullable(),
+  timesPlayed: z.number().nullable(),
+  score: z.number().nullable()
+})
+export type DbGame = z.infer<typeof zDbGame>
