@@ -4,13 +4,12 @@ import { generateId } from 'ai'
 import type { Message } from 'ai'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc'
-import { game, chat, message, rating, user } from "@/server/db/schema"
+import { game, chat, message, rating } from "@/server/db/schema"
 import { eq, asc, and, count } from 'drizzle-orm'
 
 import { zMessage, zStatus, zDbGame, zRate } from '@/lib/schemas'
 
 import { generateNewGame } from '@/lib/ai-util'
-import { db } from '@/server/db'
 
 export const chatRouter = createTRPCRouter({
   getGame: publicProcedure
