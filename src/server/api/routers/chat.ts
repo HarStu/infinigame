@@ -103,7 +103,7 @@ export const chatRouter = createTRPCRouter({
           .where(eq(chat.id, input.id))
       }
     }),
-  generateNewGame: protectedProcedure
+  generateNewGame: publicProcedure
     .mutation(async ({ ctx }) => {
       const newGame = await generateNewGame()
       if (!newGame.object) {
