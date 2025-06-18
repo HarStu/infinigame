@@ -1,18 +1,26 @@
 'use client'
 
-import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 
 import { authClient } from '@/lib/auth-client'
+import { api } from '@/trpc/react'
+
 import { Button } from '@/components/ui/button'
 import { GenGameButton } from '@/components/gen-game-button'
 import { TopGamesSelect } from '@/components/top-games-select'
 import { GameRater } from '@/components/game-rater'
 
+
 export function Sidebar() {
   const { data: session } = authClient.useSession()
   const pathname = usePathname()
-  const [voteText, setVoteText] = useState('rate this game')
+
+  // Grab the gameName from the url
+  const chatId = pathname.split('/').filter(segment => Boolean(segment)).pop()
+  console.log(`chatId, from URL, is: ${chatId}`)
+
+  // this should contain the gameName!
+  const chatResult = api.chat.getChat.useQuery({ id: chatId! })
 
   async function signInWithGoogle() {
     await authClient.signIn.social({
@@ -41,7 +49,7 @@ export function Sidebar() {
         </div>
       </div>
     )
-  } else {
+  } else if (chatResult.data?.gameName) {
     return (
       <div className={sideBarClass}>
 
@@ -49,8 +57,7 @@ export function Sidebar() {
         <GenGameButton />
 
         {/* current game rating options */}
-        {/* HOW DO I GET THIS THE NAME OF THE GAME WE'RE CURRENTLY PLAYING? */}
-        <GameRater gameName='nixon' />
+        <GameRater gameName={chatResult.data.gameName} />
 
         {/* game selection */}
         <div className="text-center font-bold my-4">

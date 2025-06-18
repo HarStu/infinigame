@@ -4,13 +4,12 @@ import { generateId } from 'ai'
 import type { Message } from 'ai'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc'
-import { game, chat, message, rating, user } from "@/server/db/schema"
+import { game, chat, message, rating } from "@/server/db/schema"
 import { eq, asc, and, count } from 'drizzle-orm'
 
 import { zMessage, zStatus, zDbGame, zRate } from '@/lib/schemas'
 
 import { generateNewGame } from '@/lib/ai-util'
-import { db } from '@/server/db'
 
 export const chatRouter = createTRPCRouter({
   getGame: publicProcedure
@@ -20,7 +19,7 @@ export const chatRouter = createTRPCRouter({
       if (gameRes[0]) {
         return gameRes[0]
       } else {
-        throw new Error(`Could not find game ${input.name}`)
+        throw new Error(`could not find game ${input.name}`)
       }
     }),
   getChat: publicProcedure
@@ -30,7 +29,7 @@ export const chatRouter = createTRPCRouter({
       if (chatRes[0]) {
         return chatRes[0]
       } else {
-        throw new Error(`Could not find chat ${chat.id}`)
+        throw new Error(`getChat: could not find chat`)
       }
     }),
   createChat: publicProcedure
@@ -55,7 +54,7 @@ export const chatRouter = createTRPCRouter({
       if (chatWithGameRes[0]) {
         return chatWithGameRes[0]
       } else {
-        throw new Error(`Could not find chat ${chat.id}`)
+        throw new Error(`getChatWithGame: could not find chat`)
       }
     }),
   loadMessages: publicProcedure
@@ -94,7 +93,7 @@ export const chatRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const chatRes = await ctx.db.select().from(chat).where(eq(chat.id, input.id))
       if (chatRes.length !== 1 || chatRes[0] === undefined) {
-        throw new Error(`Could not find chat ${chat.id}`)
+        throw new Error(`updateGameStatus: could not find chat`)
       } else {
         chatRes[0].status = input.status
 
@@ -104,7 +103,7 @@ export const chatRouter = createTRPCRouter({
           .where(eq(chat.id, input.id))
       }
     }),
-  generateNewGame: protectedProcedure
+  generateNewGame: publicProcedure
     .mutation(async ({ ctx }) => {
       const newGame = await generateNewGame()
       if (!newGame.object) {

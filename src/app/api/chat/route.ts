@@ -1,4 +1,3 @@
-import { openai } from '@ai-sdk/openai'
 import { google } from '@ai-sdk/google'
 import {
   streamText,
@@ -6,7 +5,7 @@ import {
   createIdGenerator,
   appendClientMessage
 } from 'ai'
-import { z } from 'zod'
+import type { Message } from 'ai'
 
 import { api } from '@/trpc/server'
 import type { ToolName } from '@/lib/game/model-tools'
@@ -17,7 +16,7 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
   // get the chat id and latest message from the client
-  const { message, id } = await req.json()
+  const { id, message } = await req.json() as { message: Message, id: string }
 
   // using the chatId, get information about the chat and game
   const chatInfo = await api.chat.getChatWithGame({ id: id })
