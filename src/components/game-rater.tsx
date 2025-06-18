@@ -5,7 +5,6 @@ import clsx from 'clsx'
 
 import { Button } from '@/components/ui/button'
 import { api } from '@/trpc/react'
-import { game } from '@/server/db/schema'
 
 export function GameRater({ gameName }: { gameName: string }) {
   const [liked, setLiked] = useState<boolean | null>(null)
@@ -46,16 +45,25 @@ export function GameRater({ gameName }: { gameName: string }) {
   }
 
   async function clickDislike() {
-    if (!liked) {
+    if (liked === false) {
       setLiked(null)
       setVoteText('rate this game')
       await nullGame({ gameName: gameName, liked: null })
     } else {
-      // SET LOADING
       setLiked(false)
       setVoteText('you dislike this game')
       await dislikeGame({ gameName: gameName, liked: false })
     }
+  }
+
+  let likeButtonClass = "m-2 bg-green-500 hover:bg-green-700"
+  let dislikeButtonClass = "m-2 bg-red-500 hover:bg-red-700"
+  if (liked) {
+    likeButtonClass = "m-2 bg-green-700"
+    dislikeButtonClass = "m-2 bg-red-300 hover:bg-red-700"
+  } else if (liked === false) {
+    likeButtonClass = "m-2 bg-green-300 hover:bg-green-700"
+    dislikeButtonClass = "m-2 bg-red-700"
   }
 
   if (ratingResult.isSuccess) {
@@ -63,14 +71,14 @@ export function GameRater({ gameName }: { gameName: string }) {
       <div className="text-center font-bold my-4">
         {voteText}
         <div className="flex items-center justify-center">
-          <Button className="m-2 bg-green-500 hover:bg-green-700">
+          <Button className={likeButtonClass} onClick={clickLike}>
             👍
           </Button>
-          <Button className="m-2 bg-red-500 hover:bg-red-700">
+          <Button className={dislikeButtonClass} onClick={clickDislike}>
             👎
           </Button>
         </div>
-      </div>
+      </div >
     )
 
     // returns for loading and error states
