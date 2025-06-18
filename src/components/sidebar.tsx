@@ -49,7 +49,7 @@ export function Sidebar() {
         </div>
       </div>
     )
-  } else if (chatResult.data && chatResult.data.gameName) {
+  } else if (chatResult.data?.gameName) {
     return (
       <div className={sideBarClass}>
 
