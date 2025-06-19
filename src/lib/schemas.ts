@@ -11,7 +11,8 @@ export const zMessage = z.object({
   toolInvocations: z.any().optional()
 })
 
-export const zStatus = z.enum(['won', 'lost', 'ongoing'])
+export const zChatResult = z.enum(['won', 'lost', 'ongoing'])
+export const zGameStatus = z.enum(['ready', 'failed', 'generating'])
 
 // Right now every game uses 'winTheGame' and 'loseTheGame' -- might as well stick with it
 export const zGame = z.object({
@@ -24,14 +25,15 @@ export const zGame = z.object({
 
 export const zDbGame = z.object({
   id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  systemPrompt: z.string(),
-  aiIdentity: z.string(),
-  requiredTools: z.any(),
+  name: z.string().nullable(),
+  description: z.string().nullable(),
+  systemPrompt: z.string().nullable(),
+  aiIdentity: z.string().nullable(),
+  requiredTools: z.any().nullable(),
   creatorId: z.string().nullable(),
   timesPlayed: z.number().nullable(),
-  score: z.number().nullable()
+  score: z.number().nullable(),
+  status: zGameStatus
 })
 export type DbGame = z.infer<typeof zDbGame>
 

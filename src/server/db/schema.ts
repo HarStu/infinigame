@@ -89,10 +89,10 @@ export const verification = pgTable("verification", {
 
 export const game = pgTable('game', {
   id: text('id').primaryKey().$defaultFn(() => randomUUID()),
-  name: text('name').notNull(),
-  description: text('description').notNull(),
-  systemPrompt: text('system_prompt').notNull(),
-  aiIdentity: text('ai_identity').notNull(),
+  name: text('name'),
+  description: text('description'),
+  systemPrompt: text('system_prompt'),
+  aiIdentity: text('ai_identity'),
   requiredTools: jsonb(),
   creatorId: text('user_id').references(() => user.id),
   timesPlayed: integer().default(0),

@@ -8,11 +8,12 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/
 import { game, chat, message, rating } from "@/server/db/schema"
 import { eq, asc, and, count } from 'drizzle-orm'
 
-import { zMessage, zStatus, zDbGame, zRate } from '@/lib/schemas'
+import { zMessage, zChatResult, zDbGame, zRate } from '@/lib/schemas'
 
 import { generateNewGame } from '@/lib/ai-util'
 
 export const chatRouter = createTRPCRouter({
+
   getGame: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -23,6 +24,7 @@ export const chatRouter = createTRPCRouter({
         throw new Error(`could not find game ${input.id}`)
       }
     }),
+
   getChat: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -33,6 +35,7 @@ export const chatRouter = createTRPCRouter({
         throw new Error(`getChat: could not find chat`)
       }
     }),
+
   createChat: publicProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -48,6 +51,7 @@ export const chatRouter = createTRPCRouter({
       })
       return chatId
     }),
+
   getChatWithGame: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -62,6 +66,7 @@ export const chatRouter = createTRPCRouter({
         throw new Error(`getChatWithGame: could not find chat`)
       }
     }),
+
   loadMessages: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -69,6 +74,7 @@ export const chatRouter = createTRPCRouter({
       const retrievedMessages: Message[] = msgRes.map(msg => msg as Message)
       return retrievedMessages
     }),
+
   saveMessages: publicProcedure
     .input(z.object({ id: z.string(), messages: z.array(zMessage) }))
     .mutation(async ({ ctx, input }) => {
@@ -93,8 +99,9 @@ export const chatRouter = createTRPCRouter({
           })
       }
     }),
+
   updateGameStatus: publicProcedure
-    .input(z.object({ id: z.string(), status: zStatus }))
+    .input(z.object({ id: z.string(), status: zChatResult }))
     .mutation(async ({ ctx, input }) => {
       const chatRes = await ctx.db.select().from(chat).where(eq(chat.id, input.id))
       if (chatRes.length !== 1 || chatRes[0] === undefined) {
@@ -108,13 +115,20 @@ export const chatRouter = createTRPCRouter({
           .where(eq(chat.id, input.id))
       }
     }),
+
   generateNewGame: publicProcedure
     .mutation(async ({ ctx }) => {
       const newGame = await generateNewGame()
+
+      const insertGame: typeof game.$inferInsert = {
+        id: randomUUID()
+      }
+
       if (!newGame.object) {
         throw new Error(`Issue generating new game`)
       }
 
+      /*
       const insertGame: typeof game.$inferInsert = {
         ...newGame.object,
         id: randomUUID(),
@@ -122,6 +136,7 @@ export const chatRouter = createTRPCRouter({
         timesPlayed: 0,
         score: 0
       }
+      */
 
       await ctx.db
         .insert(game)
@@ -129,6 +144,7 @@ export const chatRouter = createTRPCRouter({
 
       return insertGame.id
     }),
+
   getTopGames: protectedProcedure
     .input(z.object({ count: z.number() }))
     .output(z.array(zDbGame))
@@ -136,6 +152,7 @@ export const chatRouter = createTRPCRouter({
       const gameRes = await ctx.db.select().from(game).orderBy(game.score).limit(input.count)
       return gameRes
     }),
+
   rateGame: protectedProcedure
     .input(z.object({ id: z.string(), liked: z.boolean().nullable() }))
     .output(zRate)
@@ -189,6 +206,7 @@ export const chatRouter = createTRPCRouter({
         return rateRes[0]
       }
     }),
+
   getRating: protectedProcedure
     .input(z.object({ id: z.string() }))
     .output(zRate.nullable())
