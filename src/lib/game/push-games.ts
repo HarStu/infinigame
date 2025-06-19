@@ -1,11 +1,13 @@
 import { db } from '@/server/db/index'
 import { gameConfigs } from '@/lib/game/games'
 import { game } from '@/server/db/schema'
+import { randomUUID } from 'crypto'
 
 export async function pushGamesToServer() {
   for (const gameEntry of gameConfigs) {
     const insertGame: typeof game.$inferInsert = {
       ...gameEntry,
+      id: randomUUID(),
       score: 0,
     }
 
@@ -14,7 +16,7 @@ export async function pushGamesToServer() {
       .insert(game)
       .values(insertGame)
       .onConflictDoUpdate({
-        target: game.name,
+        target: game.id,
         set: {
           description: insertGame.description,
           systemPrompt: insertGame.systemPrompt,

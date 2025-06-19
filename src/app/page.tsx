@@ -13,8 +13,8 @@ export default function Home() {
 
   async function genNewGame() {
     setLoading(true)
-    const newGameName = await newGame()
-    redirect(`/play/${newGameName}`)
+    const newGameId = await newGame()
+    redirect(`/game/${newGameId}`)
   }
 
   if (!loading) {

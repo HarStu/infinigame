@@ -14,8 +14,10 @@ import {
   integer,
   jsonb
 } from "drizzle-orm/pg-core";
+import { randomUUID } from 'crypto'
 
 export const chatResultEnum = pgEnum("chat_result", ['won', 'lost', 'ongoing'])
+export const gameStatusEnum = pgEnum("game_status", ['ready', 'failed', 'generating'])
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -86,19 +88,21 @@ export const verification = pgTable("verification", {
 });
 
 export const game = pgTable('game', {
-  name: text('name').primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => randomUUID()),
+  name: text('name').notNull(),
   description: text('description').notNull(),
   systemPrompt: text('system_prompt').notNull(),
   aiIdentity: text('ai_identity').notNull(),
   requiredTools: jsonb(),
   creatorId: text('user_id').references(() => user.id),
   timesPlayed: integer().default(0),
-  score: integer().default(0)
+  score: integer().default(0),
+  status: gameStatusEnum('game_status').notNull().default('generating')
 })
 
 export const chat = pgTable('chat', {
   id: text('id').primaryKey(),
-  gameName: text('game_name').notNull().references(() => game.name),
+  gameId: text('game_id').notNull().references(() => game.id),
   owner: text('owner').references(() => user.id),
   createdOn: timestamp().notNull(),
   status: chatResultEnum('chat_result').notNull().default('ongoing')
@@ -117,9 +121,9 @@ export const message = pgTable('message', {
 })
 
 export const rating = pgTable('rating', {
-  gameName: text('game_name').notNull().references(() => game.name),
+  gameId: text('game_id').notNull().references(() => game.id),
   userId: text('user_id').notNull().references(() => user.id),
   liked: boolean(),
 }, (table) => [
-  primaryKey({ columns: [table.gameName, table.userId] }),
+  primaryKey({ columns: [table.gameId, table.userId] }),
 ])

@@ -23,6 +23,7 @@ export const zGame = z.object({
 })
 
 export const zDbGame = z.object({
+  id: z.string(),
   name: z.string(),
   description: z.string(),
   systemPrompt: z.string(),
@@ -35,8 +36,8 @@ export const zDbGame = z.object({
 export type DbGame = z.infer<typeof zDbGame>
 
 export const zRate = z.object({
+  gameId: z.string(),
   userId: z.string(),
-  gameName: z.string(),
   liked: z.boolean().nullable()
 })
 export type Rate = z.infer<typeof zRate>

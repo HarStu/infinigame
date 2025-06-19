@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 import { generateId } from 'ai'
 import type { Message } from 'ai'
+import { randomUUID } from 'crypto'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc'
 import { game, chat, message, rating } from "@/server/db/schema"
@@ -13,13 +14,13 @@ import { generateNewGame } from '@/lib/ai-util'
 
 export const chatRouter = createTRPCRouter({
   getGame: publicProcedure
-    .input(z.object({ name: z.string() }))
+    .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const gameRes = await ctx.db.select().from(game).where(eq(game.name, input.name))
+      const gameRes = await ctx.db.select().from(game).where(eq(game.id, input.id))
       if (gameRes[0]) {
         return gameRes[0]
       } else {
-        throw new Error(`could not find game ${input.name}`)
+        throw new Error(`could not find game ${input.id}`)
       }
     }),
   getChat: publicProcedure
@@ -33,14 +34,14 @@ export const chatRouter = createTRPCRouter({
       }
     }),
   createChat: publicProcedure
-    .input(z.object({ gameName: z.string() }))
+    .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       // include the ownerId if available
       const ownerId = ctx.authSession?.user?.id
       const chatId = generateId()
       await ctx.db.insert(chat).values({
         id: chatId,
-        gameName: input.gameName,
+        gameId: input.id,
         owner: ownerId,
         createdOn: new Date(),
         status: 'ongoing'
@@ -50,7 +51,11 @@ export const chatRouter = createTRPCRouter({
   getChatWithGame: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const chatWithGameRes = await ctx.db.select().from(chat).where(eq(chat.id, input.id)).innerJoin(game, eq(chat.gameName, game.name))
+      const chatWithGameRes = await ctx.db
+        .select()
+        .from(chat)
+        .where(eq(chat.id, input.id))
+        .innerJoin(game, eq(chat.gameId, game.id))
       if (chatWithGameRes[0]) {
         return chatWithGameRes[0]
       } else {
@@ -109,8 +114,10 @@ export const chatRouter = createTRPCRouter({
       if (!newGame.object) {
         throw new Error(`Issue generating new game`)
       }
+
       const insertGame: typeof game.$inferInsert = {
         ...newGame.object,
+        id: randomUUID(),
         creatorId: null,
         timesPlayed: 0,
         score: 0
@@ -120,7 +127,7 @@ export const chatRouter = createTRPCRouter({
         .insert(game)
         .values(insertGame)
 
-      return newGame.object.name
+      return insertGame.id
     }),
   getTopGames: protectedProcedure
     .input(z.object({ count: z.number() }))
@@ -130,13 +137,13 @@ export const chatRouter = createTRPCRouter({
       return gameRes
     }),
   rateGame: protectedProcedure
-    .input(z.object({ gameName: z.string(), liked: z.boolean().nullable() }))
+    .input(z.object({ id: z.string(), liked: z.boolean().nullable() }))
     .output(zRate)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.user.id
       const insertRating: typeof rating.$inferInsert = {
         userId: userId,
-        gameName: input.gameName,
+        gameId: input.id,
         liked: input.liked
       }
 
@@ -144,7 +151,7 @@ export const chatRouter = createTRPCRouter({
         .insert(rating)
         .values(insertRating)
         .onConflictDoUpdate({
-          target: [rating.gameName, rating.userId],
+          target: [rating.gameId, rating.userId],
           set: {
             liked: insertRating.liked,
           }
@@ -157,7 +164,7 @@ export const chatRouter = createTRPCRouter({
         .from(rating)
         .where(and(
           eq(rating.liked, true),
-          eq(rating.gameName, input.gameName)
+          eq(rating.gameId, input.id)
         ))
 
       const dislikes = await ctx.db
@@ -165,7 +172,7 @@ export const chatRouter = createTRPCRouter({
         .from(rating)
         .where(and(
           eq(rating.liked, false),
-          eq(rating.gameName, input.gameName)
+          eq(rating.gameId, input.id)
         ))
 
       const newScore = (likes[0]?.count ?? 0) - (dislikes[0]?.count ?? 0)
@@ -173,17 +180,17 @@ export const chatRouter = createTRPCRouter({
       await ctx.db
         .update(game)
         .set({ score: newScore })
-        .where(eq(game.name, input.gameName))
+        .where(eq(game.id, input.id))
 
 
       if (!rateRes[0]) {
-        throw new Error(`Error: user ${userId} could not successfully rate game ${input.gameName}`)
+        throw new Error(`Error: user ${userId} could not successfully rate game ${input.id}`)
       } else {
         return rateRes[0]
       }
     }),
   getRating: protectedProcedure
-    .input(z.object({ gameName: z.string() }))
+    .input(z.object({ id: z.string() }))
     .output(zRate.nullable())
     .query(async ({ ctx, input }) => {
       const userId = ctx.user.id
@@ -192,7 +199,7 @@ export const chatRouter = createTRPCRouter({
         .from(rating)
         .where(and(
           eq(rating.userId, userId),
-          eq(rating.gameName, input.gameName)
+          eq(rating.gameId, input.id)
         ))
 
       if (!rateRes[0] || rateRes.length === 0) {
