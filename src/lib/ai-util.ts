@@ -59,11 +59,13 @@ Generate one brand-new game concept that strictly follows this format and rules.
 `
 
 export async function generateNewGame() {
+  console.time('GAME GEN')
   const newGame = await generateObject({
     model: openai('gpt-4o-mini'),
     schema: zGame,
     prompt: gameGenPrompt,
     temperature: 1.1
   })
+  console.timeEnd('GAME GEN')
   return newGame
 }

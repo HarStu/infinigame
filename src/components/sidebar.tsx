@@ -15,11 +15,11 @@ export function Sidebar() {
   const { data: session } = authClient.useSession()
   const pathname = usePathname()
 
-  // Grab the gameName from the url
+  // Grab the chatId from the url
   const chatId = pathname.split('/').filter(segment => Boolean(segment)).pop()
   console.log(`chatId, from URL, is: ${chatId}`)
 
-  // this should contain the gameName!
+  // this should contain the game name and description!
   const chatResult = api.chat.getChat.useQuery({ id: chatId! })
 
   async function signInWithGoogle() {
@@ -49,7 +49,7 @@ export function Sidebar() {
         </div>
       </div>
     )
-  } else if (chatResult.data?.gameName) {
+  } else if (chatResult.data?.gameId) {
     return (
       <div className={sideBarClass}>
 
@@ -57,7 +57,7 @@ export function Sidebar() {
         <GenGameButton />
 
         {/* current game rating options */}
-        <GameRater gameName={chatResult.data.gameName} />
+        <GameRater gameId={chatResult.data.gameId} />
 
         {/* game selection */}
         <div className="text-center font-bold my-4">

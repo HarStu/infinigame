@@ -11,7 +11,7 @@ export function TopGamesSelect({ getGameCount, showGameCount }: { getGameCount: 
   const router = useRouter()
 
   function goToGame(game: DbGame) {
-    router.push(`/play/${game.name}`)
+    router.push(`/game/${game.id}`)
   }
 
   // Grab the top 'getGameCount' games from the database 
@@ -28,7 +28,7 @@ export function TopGamesSelect({ getGameCount, showGameCount }: { getGameCount: 
           randomGames.map(game => {
             return (
               <Button
-                key={game.name}
+                key={game.id}
                 onClick={() => goToGame(game)}
                 className='mx-8'
               >
