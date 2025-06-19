@@ -139,10 +139,11 @@ export const chatRouter = createTRPCRouter({
       // Setup async operation to generate full game and populate placeholder
       generateNewGame()
         .then(async (genGame) => {
+          console.log(`GENERATED GAME: ${JSON.stringify(genGame)}`)
           await ctx.db
             .update(game)
             .set({
-              ...genGame,
+              ...genGame.object,
               status: 'ready'
             })
             .where(eq(game.id, newGameId))
