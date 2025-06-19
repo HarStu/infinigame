@@ -82,7 +82,7 @@ export function GameRater({ gameId }: { gameId: string }) {
     // returns for loading and error states
   } else if (ratingResult.isPending) {
     return (
-      <div>
+      <div className="flex items-center justify-center">
         loading...
       </div>
     )

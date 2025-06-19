@@ -23,9 +23,11 @@ Each scenario must follow the rules below. All elements must be returned in the 
      - Describe the AI character’s personality, tone, and role in detail.
      - Explain how the character should behave consistently throughout the conversation.
      - Specify **clear WIN and LOSE conditions**—what the user must do to succeed or fail.
-     - For each condition, define the exact moment and logic for invoking a tool:
-       - When the WIN condition is met, the AI **must call the tool** 'winTheGame'.
-       - When the LOSE condition is met, the AI **must call the tool** 'loseTheGame'.
+       - The system prompt itself **must explicitly name** the tool calls 'winTheGame' and 'loseTheGame', and state plainly that they are *tool calls* (not narrative text).
+       - It must instruct the AI that these tools **must** be invoked the very moment the corresponding condition is satisfied.
+     - For each condition, define the exact moment and logic for invoking these tools:
+       - When the WIN condition is met, the AI **must immediately call** the tool 'winTheGame'.
+       - When the LOSE condition is met, the AI **must immediately call** the tool 'loseTheGame'.
      - Make sure tool calls happen **immediately** and are **never omitted** when the condition is triggered.
    - Write the system prompt in **natural, fluent prose**, as if briefing a roleplayer or actor.
 

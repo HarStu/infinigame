@@ -79,20 +79,22 @@ export function GenGameButton() {
     return () => { clearTimeout(fadeOut); clearTimeout(change) }
   }, [loadIndex, state])
 
+  const baseButtonClass = "m-4 mb-2"
+
   if (state == 'ready') {
     return (
-      <Button className="m-4 mb-2" onClick={genNewGame}>
-        random new game!
+      <Button className={baseButtonClass} onClick={genNewGame}>
+        random new game
       </Button>
     )
   } else if (state === 'loading') {
     return (
-      <Button className='m-4 mb-2 ease-in-out' >
+      <Button className={baseButtonClass + ' ease-in-out'}>
         <div className={`transition-opacity duration-200 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
           {loadText[loadIndex]}
         </div>
         <Loader2 className="size-4 animate-spin" />
-      </ Button >
+      </Button>
     )
   } else if (state === 'error') {
     return (

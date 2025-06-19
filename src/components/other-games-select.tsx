@@ -7,19 +7,19 @@ import { api } from '@/trpc/react'
 import type { DbGame } from '@/lib/schemas'
 
 
-export function TopGamesSelect({ getGameCount, showGameCount }: { getGameCount: number, showGameCount: number }) {
+export function OtherGamesSelect({ getGameCount, showGameCount }: { getGameCount: number, showGameCount: number }) {
   const router = useRouter()
 
   function goToGame(game: DbGame) {
     router.push(`/game/${game.id}`)
   }
 
-  // Grab the top 'getGameCount' games from the database 
-  const topGamesResult = api.chat.getTopGames.useQuery({ count: getGameCount })
+  // Grab the top 'getGameCount' games from the database, plus some random ones
+  const gamesResult = api.chat.getGames.useQuery({ count: getGameCount })
 
-  if (topGamesResult.isSuccess) {
+  if (gamesResult.isSuccess) {
     // Shuffled the games
-    const shuffledGames = [...topGamesResult.data].sort(() => Math.random() - 0.5)
+    const shuffledGames = [...gamesResult.data].sort(() => Math.random() - 0.5)
     const randomGames = shuffledGames.splice(0, showGameCount)
 
     return (
@@ -41,13 +41,13 @@ export function TopGamesSelect({ getGameCount, showGameCount }: { getGameCount: 
     )
 
     // returns for loading and error states
-  } else if (topGamesResult.isPending) {
+  } else if (gamesResult.isPending) {
     return (
       <div>
         loading a selection of top games...
       </div>
     )
-  } else if (topGamesResult.isError) {
+  } else if (gamesResult.isError) {
     return (
       <div>
         error retrieving top games

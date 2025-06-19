@@ -1,5 +1,6 @@
 'use server'
 
+import { GameButton } from '@/components/game-button'
 import { GenGameButton } from '@/components/gen-game-button'
 import { api } from '@/trpc/server'
 
@@ -52,10 +53,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         </div>
 
         {/* link back to the game */}
-        <div className="text-center mb-6 font-bold">
+        <div className="text-center font-bold">
           want to play?
-          <GenGameButton />
         </div>
+        <GameButton id={chatInfo.game.id} label='this game' />
+        <GenGameButton />
+
+        <div className="h-8" />
       </div>
     )
   }
