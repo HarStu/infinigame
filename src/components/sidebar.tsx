@@ -17,7 +17,6 @@ export function Sidebar() {
 
   // Grab the chatId from the url
   const chatId = pathname.split('/').filter(segment => Boolean(segment)).pop()
-  console.log(`chatId, from URL, is: ${chatId}`)
 
   // this should contain the game name and description!
   const chatResult = api.chat.getChat.useQuery({ id: chatId! })
