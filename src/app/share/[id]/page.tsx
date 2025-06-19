@@ -1,11 +1,7 @@
-'use server'
-
-import { redirect } from 'next/navigation'
 
 import { GameButton } from '@/components/game-button'
 import { GenGameButton } from '@/components/gen-game-button'
 import { api } from '@/trpc/server'
-import { chat } from '@/server/db/schema'
 
 export default async function Page({ params }: { params: { id: string } }) {
   // Get information about the chat and the game

@@ -7,7 +7,7 @@ import { api } from '@/trpc/react'
 import type { DbGame } from '@/lib/schemas'
 
 
-export function TopGamesSelect({ getGameCount, showGameCount }: { getGameCount: number, showGameCount: number }) {
+export function OtherGamesSelect({ getGameCount, showGameCount }: { getGameCount: number, showGameCount: number }) {
   const router = useRouter()
 
   function goToGame(game: DbGame) {

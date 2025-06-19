@@ -9,7 +9,7 @@ import { api } from '@/trpc/react'
 
 import { Button } from '@/components/ui/button'
 import { GenGameButton } from '@/components/gen-game-button'
-import { TopGamesSelect } from '@/components/top-games-select'
+import { OtherGamesSelect } from '@/components/other-games-select'
 import { GameRater } from '@/components/game-rater'
 
 
@@ -56,8 +56,8 @@ export function Sidebar() {
   // the sessionSeed re-runs on refresh, which triggers the useMemo to re-cache
   const [sessionSeed] = useState(() => Date.now())
   const otherGames = useMemo(() => (
-    <TopGamesSelect getGameCount={50} showGameCount={3} />
-  ), [])
+    <OtherGamesSelect getGameCount={50} showGameCount={3} />
+  ), [sessionSeed])
 
 
   const [copyButtonText, setCopyButtonText] = useState('copy sharable link')
