@@ -1,11 +1,12 @@
+'use server'
 
 import { GameButton } from '@/components/game-button'
 import { GenGameButton } from '@/components/gen-game-button'
 import { api } from '@/trpc/server'
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
   // Get information about the chat and the game
-  const { id } = params
+  const { id } = await props.params
   const chatInfo = await api.chat.getChatWithGame({ id })
 
   // Get all the previous messages 
