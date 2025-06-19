@@ -116,33 +116,48 @@ export const chatRouter = createTRPCRouter({
       }
     }),
 
-  generateNewGame: publicProcedure
+  startGameGen: publicProcedure
     .mutation(async ({ ctx }) => {
-      const newGame = await generateNewGame()
+      // Create a new gameId
+      const newGameId = randomUUID()
 
+      // Create a placeholder game with that id
       const insertGame: typeof game.$inferInsert = {
-        id: randomUUID()
+        id: newGameId,
+        status: 'generating'
       }
 
-      if (!newGame.object) {
-        throw new Error(`Issue generating new game`)
+      // Insert the placeholder
+      try {
+        await ctx.db
+          .insert(game)
+          .values(insertGame)
+      } catch {
+        throw new Error('Issue inserting pending game into db')
       }
 
-      /*
-      const insertGame: typeof game.$inferInsert = {
-        ...newGame.object,
-        id: randomUUID(),
-        creatorId: null,
-        timesPlayed: 0,
-        score: 0
-      }
-      */
+      // Setup async operation to generate full game and populate placeholder
+      generateNewGame()
+        .then(async (genGame) => {
+          await ctx.db
+            .update(game)
+            .set({
+              ...genGame,
+              status: 'ready'
+            })
+            .where(eq(game.id, newGameId))
+        })
+        .catch(async () => {
+          await ctx.db
+            .update(game)
+            .set({
+              status: 'failed'
+            })
+            .where(eq(game.id, newGameId))
+        })
 
-      await ctx.db
-        .insert(game)
-        .values(insertGame)
-
-      return insertGame.id
+      // Return the gameId used for the placeholder, to be updated with the full game
+      return newGameId
     }),
 
   getTopGames: protectedProcedure
