@@ -6,7 +6,7 @@ import { randomUUID } from 'crypto'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc'
 import { game, chat, message, rating } from "@/server/db/schema"
-import { eq, asc, and, count } from 'drizzle-orm'
+import { eq, asc, and, count, isNotNull } from 'drizzle-orm'
 
 import { zMessage, zChatResult, zDbGame, zRate } from '@/lib/schemas'
 
@@ -165,7 +165,7 @@ export const chatRouter = createTRPCRouter({
     .input(z.object({ count: z.number() }))
     .output(z.array(zDbGame))
     .query(async ({ ctx, input }) => {
-      const gameRes = await ctx.db.select().from(game).orderBy(game.score).limit(input.count)
+      const gameRes = await ctx.db.select().from(game).where(isNotNull(game.name)).orderBy(game.score).limit(input.count)
       return gameRes
     }),
 
