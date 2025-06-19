@@ -48,7 +48,7 @@ export function GenGameButton() {
     "Making it new...",
     "Diving into latent space...",
     "Looking for characters...",
-    "Removing herobrine...",
+    "Thinking hard...",
     "Throwing in a twist...",
     "Backpropogating...",
     "Redoing it, but better...",
