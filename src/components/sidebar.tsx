@@ -61,7 +61,7 @@ export function Sidebar() {
         {/* game selection */}
         <div className="text-center font-bold my-4">
           try another game
-          <TopGamesSelect getGameCount={30} showGameCount={5} />
+          <TopGamesSelect getGameCount={50} showGameCount={3} />
         </div>
 
         {/* log out button */}
