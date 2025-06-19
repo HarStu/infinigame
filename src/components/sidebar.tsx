@@ -56,7 +56,7 @@ export function Sidebar() {
   // the sessionSeed re-runs on refresh, which triggers the useMemo to re-cache
   const [sessionSeed] = useState(() => Date.now())
   const otherGames = useMemo(() => (
-    <OtherGamesSelect getGameCount={50} showGameCount={3} />
+    <OtherGamesSelect getGameCount={50} showGameCount={5} />
   ), [sessionSeed])
 
 
