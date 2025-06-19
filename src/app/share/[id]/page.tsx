@@ -1,11 +1,15 @@
 'use server'
 
+import { redirect } from 'next/navigation'
+
+import { GameButton } from '@/components/game-button'
 import { GenGameButton } from '@/components/gen-game-button'
 import { api } from '@/trpc/server'
+import { chat } from '@/server/db/schema'
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
+export default async function Page({ params }: { params: { id: string } }) {
   // Get information about the chat and the game
-  const { id } = await props.params
+  const { id } = params
   const chatInfo = await api.chat.getChatWithGame({ id })
 
   // Get all the previous messages 
@@ -52,10 +56,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         </div>
 
         {/* link back to the game */}
-        <div className="text-center mb-6 font-bold">
+        <div className="text-center font-bold">
           want to play?
-          <GenGameButton />
         </div>
+        <GameButton id={chatInfo.game.id} label='this game' />
+        <GenGameButton />
+
+        <div className="h-8" />
       </div>
     )
   }
