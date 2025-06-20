@@ -265,11 +265,13 @@ export const chatRouter = createTRPCRouter({
     }),
 
   claimChat: protectedProcedure
-    .input(z.object({ userId: z.string(), chatId: z.string() }))
+    .input(z.object({ chatId: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      if (!ctx.authSession?.user.id) return []
+
       const chatUpdateRes = await ctx.db
         .update(chat)
-        .set({ owner: input.userId })
+        .set({ owner: ctx.authSession.user.id })
         .where(and(
           eq(chat.id, input.chatId),
           isNull(chat.owner)
