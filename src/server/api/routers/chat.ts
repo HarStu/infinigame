@@ -6,7 +6,7 @@ import { randomUUID } from 'crypto'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc'
 import { game, chat, message, rating } from "@/server/db/schema"
-import { sql, eq, asc, and, count, isNotNull } from 'drizzle-orm'
+import { sql, eq, asc, and, count, isNull, isNotNull } from 'drizzle-orm'
 
 import { zMessage, zChatResult, zDbGame, zRate } from '@/lib/schemas'
 
@@ -262,5 +262,20 @@ export const chatRouter = createTRPCRouter({
       } else {
         return rateRes[0]
       }
+    }),
+
+  claimChat: protectedProcedure
+    .input(z.object({ userId: z.string(), chatId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const chatUpdateRes = await ctx.db
+        .update(chat)
+        .set({ owner: input.userId })
+        .where(and(
+          eq(chat.id, input.chatId),
+          isNull(chat.owner)
+        ))
+        .returning()
+
+      return chatUpdateRes
     })
 })
