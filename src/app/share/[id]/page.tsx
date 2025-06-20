@@ -1,8 +1,7 @@
 'use server'
 
 import { GameButton } from '@/components/game-button'
-import { GenGameButton } from '@/components/gen-game-button'
-import { ScrollArea } from '@radix-ui/react-scroll-area'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { api } from '@/trpc/server'
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
@@ -13,7 +12,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   // Get all the previous messages 
   const messages = await api.chat.loadMessages({ id })
 
-  let messageContainerClass = "border-2 flex-1 bg-white rounded p-4 mt-4 mb-6 overflow-y-auto transition-all duration-900 ease-in-out"
+  let messageContainerClass = "border-2 flex-1 rounded bg-white p-4 mt-4 mb-6 overflow-y-auto transition-all duration-900 ease-in-out"
   if (chatInfo.chat.status === 'won') {
     messageContainerClass += " border-green-500"
   } else if (chatInfo.chat.status === 'lost') {
