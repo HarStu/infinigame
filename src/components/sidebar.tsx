@@ -38,6 +38,7 @@ export function Sidebar() {
   // function for signing out
   async function signOut() {
     await authClient.signOut()
+    window.location.reload()
   }
 
   // handle copying sharable link to the clipboard
