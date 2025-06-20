@@ -13,7 +13,7 @@ export async function Sidebar() {
   })
 
   return (
-    <div className="flex flex-col w-64 m-4 bg-gray-200 border-2 rounded">
+    <div className="flex flex-col w-64 gap-4">
       {session ? <PrivateSidebar /> : <PublicSidebar />}
     </div >
   )

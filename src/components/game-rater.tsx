@@ -66,7 +66,7 @@ export function GameRater({ gameId }: { gameId: string }) {
 
   if (ratingResult.isSuccess) {
     return (
-      <div className="text-center font-bold my-4">
+      <div className="text-center font-bold">
         {voteText}
         <div className="flex items-center justify-center">
           <Button className={likeButtonClass} onClick={clickLike}>

@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 import { useEffect, useRef, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
@@ -71,7 +72,7 @@ export function Chat(chatProps: ChatProps) {
 
   // Setup variables used to modify and style the markup
   let inputPrompt = "say something..."
-  let messageContainerClass = "border-2 flex-1 rounded bg-gray-200 p-4 mt-4 overflow-y-auto transition-all duration-900 ease-in-out"
+  let messageContainerClass = "border-2 flex-1 rounded bg-white p-4 mt-4 overflow-y-auto transition-all duration-900 ease-in-out"
   if (gameState === 'won') {
     messageContainerClass += " border-green-500"
     inputPrompt = 'you won!'
@@ -102,7 +103,7 @@ export function Chat(chatProps: ChatProps) {
       </div>
 
       {/* render messages */}
-      <div className={messageContainerClass}>
+      <ScrollArea className={messageContainerClass}>
         {messages.map(message => (
           <div key={message.id} className='p-1'>
             <strong>{message.role === 'user' ? 'user: ' : (`${chatInfo.data?.game.aiIdentity ?? 'AI'}: `)}</strong>
@@ -110,7 +111,7 @@ export function Chat(chatProps: ChatProps) {
           </div>
         ))}
         <div ref={bottomRef} />
-      </div>
+      </ScrollArea>
 
       {/* render spinner (only visible while generating response) */}
       <div className={spinnerClass}>
@@ -136,7 +137,7 @@ export function Chat(chatProps: ChatProps) {
           value={input}
           onChange={handleInputChange}
           placeholder={inputPrompt}
-          className="flex-1 p-2 border-2 rounded bg-gray-200"
+          className="flex-1 p-2 border-2 rounded bg-white"
           disabled={error !== null && gameState !== 'ongoing'}
         />
         {(status === 'ready') ?

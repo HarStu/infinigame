@@ -16,16 +16,22 @@ export function PublicSidebar() {
     })
   }
 
-  const buttonClass = "mx-4 my-4"
+  const sidebarItemClass = "flex items-center justify-center bg-white border-2 pt-4 pb-5 flex-1 rounded"
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col flex-1 m-4 gap-4">
+
       {/* sidebar when the player is not logged in*/}
-      <Button className={buttonClass} onClick={signInWithGoogle}>
-        login with google
-      </Button>
-      <div className="m-4 py-4 border-2 rounded text-center text-wrap">
-        login to play an infinite selection of games
+      <div className={sidebarItemClass}>
+        <Button onClick={signInWithGoogle}>
+          login with google
+        </Button>
+      </div>
+
+      <div className={sidebarItemClass}>
+        <div className='text-center'>
+          login to play an infinite selection of games
+        </div>
       </div>
     </div>
   )
