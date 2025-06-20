@@ -35,11 +35,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         <div className="items-center text-center mt-4">
           <strong>game: </strong>{chatInfo.game.name}
         </div>
-        <div className="items-center text-center ">
-          <strong>status: </strong>{chatInfo.chat.status}
-        </div>
         <div className="items-center text-center">
           <strong>total messages: </strong>{messages.length}
+        </div>
+        <div className="items-center text-center ">
+          <strong>status: </strong>{chatInfo.chat.status}
         </div>
 
         {/* render messages */}
