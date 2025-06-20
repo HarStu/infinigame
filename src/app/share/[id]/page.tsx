@@ -12,7 +12,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   // Get all the previous messages 
   const messages = await api.chat.loadMessages({ id })
 
-  let messageContainerClass = "border flex-1 rounded p-4 mt-4 mb-6 overflow-y-auto transition-all duration-900 ease-in-out"
+  let messageContainerClass = "border-2 flex-1 rounded p-4 mt-4 mb-6 overflow-y-auto transition-all duration-900 ease-in-out"
   if (chatInfo.chat.status === 'won') {
     messageContainerClass += " border-green-500"
   } else if (chatInfo.chat.status === 'lost') {

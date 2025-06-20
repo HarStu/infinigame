@@ -30,8 +30,11 @@ export async function POST(req: Request) {
     message
   })
 
+  // Addition to the systemPrompt to incentivize tool calls
+  const useToolString = ' When a win or lose condition is met, you must invoke the corresponding tool using a tool call — not by printing or saying it. You must call the winTheGame or loseTheGame tool as an actual function tool call, not as a string, code snippet, or description.'
+
   // grab system prompt
-  const systemPrompt = chatInfo.game.systemPrompt
+  const systemPrompt = chatInfo.game.systemPrompt!.concat(useToolString)
 
   // setup tools
   const requiredTools = chatInfo.game.requiredTools as ToolName[]
@@ -41,7 +44,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: google('gemini-2.0-flash'),
-    system: systemPrompt!,
+    system: systemPrompt,
     messages,
     tools: systemTools,
     experimental_generateMessageId: createIdGenerator({
