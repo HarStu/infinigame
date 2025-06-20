@@ -1,5 +1,6 @@
 'use client'
 
+
 import { usePathname } from 'next/navigation'
 import { useState, useMemo } from 'react'
 import clsx from 'clsx'
@@ -13,8 +14,7 @@ import { OtherGamesSelect } from '@/components/other-games-select'
 import { GameRater } from '@/components/game-rater'
 
 
-export function Sidebar() {
-  const { data: session } = authClient.useSession()
+export function PrivateSidebar() {
   const pathname = usePathname()
 
   // grab the chatId from the url
@@ -26,14 +26,6 @@ export function Sidebar() {
 
   // this should contain the game name and description!
   const chatResult = api.chat.getChat.useQuery({ id: chatId! })
-
-  // function for logging in with google
-  async function signInWithGoogle() {
-    await authClient.signIn.social({
-      provider: "google",
-      callbackURL: pathname
-    })
-  }
 
   // function for signing out
   async function signOut() {
@@ -65,45 +57,30 @@ export function Sidebar() {
   const sideBarClass = "flex flex-col w-64 m-4 bg-gray-200 border rounded-2xl"
   const buttonClass = "mx-4 my-2"
 
-  if (!session) {
-    return (
-      <div className={sideBarClass}>
+  return (
+    <div className={sideBarClass}>
 
-        {/* sidebar when the player is not logged in*/}
-        <Button className={buttonClass} onClick={signInWithGoogle}>
-          login with google
-        </Button>
-        <div className="m-4 py-4 border rounded-2xl text-center text-wrap">
-          login to play an infinite selection of games
-        </div>
+      {/* new game button */}
+      <GenGameButton />
+
+      {/* current game rating options */}
+      <GameRater gameId={chatResult.data?.gameId} />
+
+      {/* game selection */}
+      <div className="text-center font-bold my-4">
+        try another game
+        {otherGames}
       </div>
-    )
-  } else if (chatResult.data?.gameId) {
-    return (
-      <div className={sideBarClass}>
 
-        {/* new game button */}
-        <GenGameButton />
+      {/* share button */}
+      <Button className={clsx(buttonClass + 'mt-4 ', justCopied && 'bg-gray-600 hover:bg-gray-600')} onClick={handleCopy}>
+        {copyButtonText}
+      </Button>
 
-        {/* current game rating options */}
-        <GameRater gameId={chatResult.data.gameId} />
-
-        {/* game selection */}
-        <div className="text-center font-bold my-4">
-          try another game
-          {otherGames}
-        </div>
-
-        {/* share button */}
-        <Button className={clsx(buttonClass + 'mt-4 ', justCopied && 'bg-gray-600 hover:bg-gray-600')} onClick={handleCopy}>
-          {copyButtonText}
-        </Button>
-
-        {/* log out button */}
-        <Button className={buttonClass + ' mt-8'} onClick={signOut}>
-          log out
-        </Button>
-      </div >
-    )
-  }
+      {/* log out button */}
+      <Button className={buttonClass + ' mt-8'} onClick={signOut}>
+        log out
+      </Button>
+    </div >
+  )
 }

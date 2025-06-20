@@ -5,7 +5,16 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { api } from '@/trpc/react'
 
-export function GameRater({ gameId }: { gameId: string }) {
+export function GameRater({ gameId }: { gameId: string | undefined }) {
+  // guard against possible undefined gameId coming in
+  if (!gameId) {
+    return (
+      <div className="flex items-center justify-center">
+        gameid issue
+      </div>
+    )
+  }
+
   const [liked, setLiked] = useState<boolean | null>(null)
   const [voteText, setVoteText] = useState<string>('rate this game')
 
@@ -34,11 +43,11 @@ export function GameRater({ gameId }: { gameId: string }) {
     if (liked) {
       setLiked(null)
       setVoteText('rate this game')
-      await nullGame({ id: gameId, liked: null }) // all of these using the object-property shorthand
+      await nullGame({ id: gameId!, liked: null }) // all of these using the object-property shorthand
     } else {
       setLiked(true)
       setVoteText('you like this game')
-      await likeGame({ id: gameId, liked: true })
+      await likeGame({ id: gameId!, liked: true })
     }
   }
 
@@ -46,11 +55,11 @@ export function GameRater({ gameId }: { gameId: string }) {
     if (liked === false) {
       setLiked(null)
       setVoteText('rate this game')
-      await nullGame({ id: gameId, liked: null })
+      await nullGame({ id: gameId!, liked: null })
     } else {
       setLiked(false)
       setVoteText('you dislike this game')
-      await dislikeGame({ id: gameId, liked: false })
+      await dislikeGame({ id: gameId!, liked: false })
     }
   }
 
