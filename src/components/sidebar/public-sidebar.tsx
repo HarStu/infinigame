@@ -16,7 +16,7 @@ export function PublicSidebar() {
     })
   }
 
-  const buttonClass = "mx-4 my-2"
+  const buttonClass = "mx-4 my-4"
 
   return (
     <div className="flex flex-col items-center">
