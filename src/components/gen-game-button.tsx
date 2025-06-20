@@ -42,11 +42,9 @@ export function GenGameButton() {
 
   // Random loading text logic
   const loadText = [
-    "New game coming up...",
     "Hyping up the AI...",
     "Making it new...",
-    "Prob latent space...",
-    "Meeting characters...",
+    "Latent space...",
     "Thinking hard...",
     "Backpropagating...",
     "Redoing it better...",
