@@ -64,7 +64,11 @@ export function PrivateSidebar() {
       <GenGameButton />
 
       {/* current game rating options */}
-      <GameRater gameId={chatResult.data?.gameId} />
+      {
+        chatResult.data?.gameId ?
+          <GameRater gameId={chatResult.data.gameId} /> :
+          <div className="flex items-center justify-center">loading gamerater</div>
+      }
 
       {/* game selection */}
       <div className="text-center font-bold my-4">
