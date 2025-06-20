@@ -1,5 +1,7 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
+
 import { useEffect, useRef, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
 import type { Message } from 'ai'
@@ -69,7 +71,7 @@ export function Chat(chatProps: ChatProps) {
 
   // Setup variables used to modify and style the markup
   let inputPrompt = "say something..."
-  let messageContainerClass = "border flex-1 rounded p-4 mt-4 overflow-y-auto transition-all duration-900 ease-in-out"
+  let messageContainerClass = "border-2 flex-1 rounded bg-gray-200 p-4 mt-4 overflow-y-auto transition-all duration-900 ease-in-out"
   if (gameState === 'won') {
     messageContainerClass += " border-green-500"
     inputPrompt = 'you won!'
@@ -77,7 +79,6 @@ export function Chat(chatProps: ChatProps) {
     messageContainerClass += " border-red-500"
     inputPrompt = 'you lost!'
   }
-  const buttonClass = "flex px-2 min-w-16 border rounded items-center justify-center hover:bg-gray-100"
   const generating = (status === 'submitted' || status === 'streaming')
 
   let spinnerClass = "flex items-center transition-all duration-300 ease-in-out h-4"
@@ -122,7 +123,6 @@ export function Chat(chatProps: ChatProps) {
           An error has occured
           <button
             type="button"
-            className={buttonClass}
             onClick={() => reload()}
           >
             retry
@@ -136,12 +136,12 @@ export function Chat(chatProps: ChatProps) {
           value={input}
           onChange={handleInputChange}
           placeholder={inputPrompt}
-          className="flex-1 p-2 border rounded"
+          className="flex-1 p-2 border-2 rounded bg-gray-200"
           disabled={error !== null && gameState !== 'ongoing'}
         />
         {(status === 'ready') ?
-          <button type='submit' className={buttonClass}>send</button> :
-          <button type='submit' className={buttonClass} onClick={() => stop()}>cancel</button>
+          <Button type='submit'>send</Button> :
+          <Button type='submit' onClick={() => stop()}>cancel</Button>
         }
       </form>
     </div >
