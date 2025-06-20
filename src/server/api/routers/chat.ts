@@ -281,7 +281,7 @@ export const chatRouter = createTRPCRouter({
       return chatUpdateRes
     }),
 
-  checkOwnership: protectedProcedure
+  checkOwnership: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       if (!ctx.authSession?.user.id) return false
