@@ -83,7 +83,7 @@ export function GenGameButton() {
 
   if (state == 'ready') {
     return (
-      <Button className={baseButtonClass} onClick={genNewGame}>
+      <Button onClick={genNewGame}>
         random new game
       </Button>
     )
@@ -98,7 +98,7 @@ export function GenGameButton() {
     )
   } else if (state === 'error') {
     return (
-      <Button className="m-4 mb-2">
+      <Button>
         error, please refresh
       </Button>
     )

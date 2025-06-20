@@ -23,14 +23,17 @@ export function OtherGamesSelect({ getGameCount, showGameCount }: { getGameCount
     const randomGames = shuffledGames.splice(0, showGameCount)
 
     return (
-      <div className="flex flex-col gap-2 my-4" >
+      <div className="flex flex-col font-bold items-center gap-2">
+        <div>
+          try another game
+        </div>
         {
           randomGames.map(game => {
             return (
               <Button
                 key={game.id}
                 onClick={() => goToGame(game)}
-                className='mx-8'
+                className='mx-8 w-48'
               >
                 {game.name}
               </Button>

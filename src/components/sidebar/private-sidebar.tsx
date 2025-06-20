@@ -54,38 +54,43 @@ export function PrivateSidebar() {
   const [copyButtonText, setCopyButtonText] = useState('copy sharable link')
   const [justCopied, setJustCopied] = useState(false)
 
-  const buttonClass = "mx-4 my-2"
+  const sidebarItemClass = "flex items-center justify-center bg-white border-2 pt-4 pb-5 flex-1 rounded"
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col flex-1 m-4 gap-4">
 
       {/* new game button */}
-      <GenGameButton />
+      <div className={sidebarItemClass}>
+        <GenGameButton />
+      </div>
 
       {/* current game rating options */}
-      {
-        chatResult.data?.gameId ?
-          <GameRater gameId={chatResult.data.gameId} /> :
-          <div className="flex items-center justify-center">loading gamerater</div>
-      }
+      <div className={sidebarItemClass}>
+        {
+          chatResult.data?.gameId ?
+            <GameRater gameId={chatResult.data.gameId} /> :
+            <div className="flex items-center justify-center">loading gamerater</div>
+        }
+      </div>
 
       {/* game selection */}
-      <div className="text-center font-bold my-4">
-        try another game
+      <div className={sidebarItemClass}>
         {otherGames}
       </div>
 
       {/* share button */}
-      <div className="flex flex-col items-center font-bold gap-4">
-        <Button className={clsx(buttonClass + 'my-4', justCopied && 'bg-gray-600 hover:bg-gray-600')} onClick={handleCopy}>
+      <div className={sidebarItemClass}>
+        <Button className='w-36' onClick={handleCopy}>
           {copyButtonText}
         </Button>
       </div>
 
       {/* log out button */}
-      <Button className={buttonClass + ' mt-8 mb-4'} onClick={signOut}>
-        log out
-      </Button>
+      <div className={sidebarItemClass}>
+        <Button onClick={signOut}>
+          log out
+        </Button>
+      </div>
     </div >
   )
 }
