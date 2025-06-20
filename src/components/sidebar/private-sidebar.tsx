@@ -59,11 +59,6 @@ export function PrivateSidebar() {
   return (
     <div className="flex flex-col flex-1 m-4 gap-4">
 
-      {/* new game button */}
-      <div className={sidebarItemClass}>
-        <GenGameButton />
-      </div>
-
       {/* current game rating options */}
       <div className={sidebarItemClass}>
         {
@@ -78,16 +73,21 @@ export function PrivateSidebar() {
         {otherGames}
       </div>
 
+      {/* new game button */}
+      <div className={sidebarItemClass}>
+        <GenGameButton />
+      </div>
+
       {/* share button */}
       <div className={sidebarItemClass}>
-        <Button className='w-36' onClick={handleCopy}>
+        <Button className='w-36 bg-blue-100' onClick={handleCopy}>
           {copyButtonText}
         </Button>
       </div>
 
       {/* log out button */}
       <div className={sidebarItemClass}>
-        <Button onClick={signOut}>
+        <Button className='bg-red-100' onClick={signOut}>
           log out
         </Button>
       </div>

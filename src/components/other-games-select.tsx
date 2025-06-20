@@ -33,7 +33,7 @@ export function OtherGamesSelect({ getGameCount, showGameCount }: { getGameCount
               <Button
                 key={game.id}
                 onClick={() => goToGame(game)}
-                className='mx-8 w-48'
+                className='mx-8 w-48 bg-green-100'
               >
                 {game.name}
               </Button>

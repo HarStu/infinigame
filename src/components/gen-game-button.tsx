@@ -44,18 +44,16 @@ export function GenGameButton() {
   const loadText = [
     "New game coming up...",
     "Hyping up the AI...",
-    "Adding je ne sais quoi...",
     "Making it new...",
-    "Diving into latent space...",
-    "Looking for characters...",
+    "Prob latent space...",
+    "Meeting characters...",
     "Thinking hard...",
-    "Throwing in a twist...",
     "Backpropogating...",
-    "Redoing it, but better...",
+    "Redoing it better...",
     "Saying 'yes, and'...",
-    "Taking acting lessons...",
-    "Producing new ideas...",
-    "Implementing some fun...",
+    "Acting lessons...",
+    "Trying new ideas...",
+    "Adding extra fun...",
     "Punching it up...",
   ]
 
@@ -79,17 +77,15 @@ export function GenGameButton() {
     return () => { clearTimeout(fadeOut); clearTimeout(change) }
   }, [loadIndex, state])
 
-  const baseButtonClass = "m-4 mb-2"
-
   if (state == 'ready') {
     return (
-      <Button onClick={genNewGame}>
-        random new game
+      <Button className="bg-green-100" onClick={genNewGame}>
+        roll a new game 🎲
       </Button>
     )
   } else if (state === 'loading') {
     return (
-      <Button className={baseButtonClass + ' ease-in-out'}>
+      <Button className="bg-green-100 ease-in-out">
         <div className={`transition-opacity duration-200 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
           {loadText[loadIndex]}
         </div>
@@ -98,7 +94,7 @@ export function GenGameButton() {
     )
   } else if (state === 'error') {
     return (
-      <Button>
+      <Button className="bg-green-100">
         error, please refresh
       </Button>
     )
