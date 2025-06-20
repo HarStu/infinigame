@@ -31,7 +31,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     )
   } else {
     return (
-      <div className="flex flex-col w-full h-screen max-w-md mx-auto">
+      <div className="flex flex-col w-full h-screen justify-center max-w-md mx-auto">
         {/* game information */}
         <div className="items-center text-center mt-4">
           <strong>game: </strong>{chatInfo.game.name}
@@ -54,11 +54,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         </ScrollArea>
 
         {/* link back to the game */}
-        <div className="text-center font-bold">
-          want to play?
+        <div className="mx-auto max-w-md text-center font-bold">
+          want to play this one?
         </div>
-        <GameButton id={chatInfo.game.id} label='this game' />
-        <GenGameButton />
+
+        <GameButton id={chatInfo.game.id} label='go to game' />
 
         <div className="h-8" />
       </div >

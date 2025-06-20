@@ -79,13 +79,13 @@ export function GenGameButton() {
 
   if (state == 'ready') {
     return (
-      <Button className="bg-green-100" onClick={genNewGame}>
+      <Button className="bg-green-200" onClick={genNewGame}>
         roll a new game 🎲
       </Button>
     )
   } else if (state === 'loading') {
     return (
-      <Button className="bg-green-100 ease-in-out">
+      <Button className="bg-green-200 ease-in-out">
         <div className={`transition-opacity duration-200 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
           {loadText[loadIndex]}
         </div>
@@ -94,7 +94,7 @@ export function GenGameButton() {
     )
   } else if (state === 'error') {
     return (
-      <Button className="bg-green-100">
+      <Button className="bg-green-200">
         error, please refresh
       </Button>
     )

@@ -11,7 +11,7 @@ export function GameButton({ id, label }: { id: string, label: string }) {
   }
 
   return (
-    <Button className="m-4 mb-2" onClick={goToGame}>
+    <Button className="m-4 mb-2 w-32 mx-auto bg-green-200" onClick={goToGame}>
       {label}
     </Button>
   )

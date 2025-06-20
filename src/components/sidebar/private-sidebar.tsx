@@ -80,14 +80,14 @@ export function PrivateSidebar() {
 
       {/* share button */}
       <div className={sidebarItemClass}>
-        <Button className='w-36 bg-blue-100' onClick={handleCopy}>
+        <Button className='w-36 bg-blue-200' onClick={handleCopy}>
           {copyButtonText}
         </Button>
       </div>
 
       {/* log out button */}
       <div className={sidebarItemClass}>
-        <Button className='bg-red-100' onClick={signOut}>
+        <Button className='bg-red-200' onClick={signOut}>
           log out
         </Button>
       </div>
