@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="font-bold justify-center">
-        INFINITE GAMES
+        INFINIGAME
       </div >
       <GenGameButton />
     </div>

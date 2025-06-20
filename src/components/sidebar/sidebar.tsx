@@ -12,9 +12,9 @@ export async function Sidebar() {
     headers: await headers()
   })
 
-  if (!session) {
-    return <PublicSidebar />
-  } else {
-    return <PrivateSidebar />
-  }
+  return (
+    <div className="flex flex-col w-64 m-4 bg-gray-200 border-2 rounded">
+      {session ? <PrivateSidebar /> : <PublicSidebar />}
+    </div >
+  )
 }

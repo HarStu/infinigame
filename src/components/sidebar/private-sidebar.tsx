@@ -54,11 +54,10 @@ export function PrivateSidebar() {
   const [copyButtonText, setCopyButtonText] = useState('copy sharable link')
   const [justCopied, setJustCopied] = useState(false)
 
-  const sideBarClass = "flex flex-col w-64 m-4 bg-gray-200 border rounded-2xl"
   const buttonClass = "mx-4 my-2"
 
   return (
-    <div className={sideBarClass}>
+    <div className="flex flex-col items-center">
 
       {/* new game button */}
       <GenGameButton />
@@ -82,7 +81,7 @@ export function PrivateSidebar() {
       </Button>
 
       {/* log out button */}
-      <Button className={buttonClass + ' mt-8'} onClick={signOut}>
+      <Button className={buttonClass + ' mt-8 mb-4'} onClick={signOut}>
         log out
       </Button>
     </div >
