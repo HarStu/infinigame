@@ -2,6 +2,7 @@
 
 import { GameButton } from '@/components/game-button'
 import { GenGameButton } from '@/components/gen-game-button'
+import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { api } from '@/trpc/server'
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
@@ -12,7 +13,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   // Get all the previous messages 
   const messages = await api.chat.loadMessages({ id })
 
-  let messageContainerClass = "border-2 flex-1 rounded p-4 mt-4 mb-6 overflow-y-auto transition-all duration-900 ease-in-out"
+  let messageContainerClass = "border-2 flex-1 bg-white rounded p-4 mt-4 mb-6 overflow-y-auto transition-all duration-900 ease-in-out"
   if (chatInfo.chat.status === 'won') {
     messageContainerClass += " border-green-500"
   } else if (chatInfo.chat.status === 'lost') {
@@ -43,14 +44,14 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         </div>
 
         {/* render messages */}
-        <div className={messageContainerClass}>
+        <ScrollArea className={messageContainerClass}>
           {messages.map(message => (
             <div key={message.id} className='p-1'>
               <strong>{message.role === 'user' ? 'user: ' : (`${chatInfo.game.aiIdentity ?? 'AI'}: `)}</strong>
               {message.content}
             </div>
           ))}
-        </div>
+        </ScrollArea>
 
         {/* link back to the game */}
         <div className="text-center font-bold">
@@ -60,7 +61,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         <GenGameButton />
 
         <div className="h-8" />
-      </div>
+      </div >
     )
   }
 

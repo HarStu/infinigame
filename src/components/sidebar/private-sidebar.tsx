@@ -76,9 +76,11 @@ export function PrivateSidebar() {
       </div>
 
       {/* share button */}
-      <Button className={clsx(buttonClass + 'mt-4 ', justCopied && 'bg-gray-600 hover:bg-gray-600')} onClick={handleCopy}>
-        {copyButtonText}
-      </Button>
+      <div className="flex flex-col items-center font-bold gap-4">
+        <Button className={clsx(buttonClass + 'my-4', justCopied && 'bg-gray-600 hover:bg-gray-600')} onClick={handleCopy}>
+          {copyButtonText}
+        </Button>
+      </div>
 
       {/* log out button */}
       <Button className={buttonClass + ' mt-8 mb-4'} onClick={signOut}>
