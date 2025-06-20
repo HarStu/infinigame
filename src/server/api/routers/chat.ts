@@ -6,7 +6,7 @@ import { randomUUID } from 'crypto'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc'
 import { game, chat, message, rating } from "@/server/db/schema"
-import { sql, eq, asc, and, count, isNotNull } from 'drizzle-orm'
+import { sql, eq, asc, and, count, isNull, isNotNull } from 'drizzle-orm'
 
 import { zMessage, zChatResult, zDbGame, zRate } from '@/lib/schemas'
 
@@ -262,5 +262,41 @@ export const chatRouter = createTRPCRouter({
       } else {
         return rateRes[0]
       }
+    }),
+
+  claimChat: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.authSession?.user.id) return []
+
+      const chatUpdateRes = await ctx.db
+        .update(chat)
+        .set({ owner: ctx.authSession.user.id })
+        .where(and(
+          eq(chat.id, input.id),
+          isNull(chat.owner)
+        ))
+        .returning()
+
+      return chatUpdateRes
+    }),
+
+  checkOwnership: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      if (!ctx.authSession?.user.id) return false
+
+      const isOwner = await ctx.db
+        .select()
+        .from(chat)
+        .where(and(
+          eq(chat.id, input.id),
+          eq(chat.owner, ctx.authSession.user.id)
+        ))
+
+      if (isOwner.length > 0) {
+        return true
+      } else
+        return false
     })
 })
