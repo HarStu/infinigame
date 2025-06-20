@@ -265,7 +265,7 @@ export const chatRouter = createTRPCRouter({
     }),
 
   claimChat: protectedProcedure
-    .input(z.object({ chatId: z.string() }))
+    .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.authSession?.user.id) return []
 
@@ -273,7 +273,7 @@ export const chatRouter = createTRPCRouter({
         .update(chat)
         .set({ owner: ctx.authSession.user.id })
         .where(and(
-          eq(chat.id, input.chatId),
+          eq(chat.id, input.id),
           isNull(chat.owner)
         ))
         .returning()
@@ -282,7 +282,7 @@ export const chatRouter = createTRPCRouter({
     }),
 
   checkOwnership: protectedProcedure
-    .input(z.object({ chatId: z.string() }))
+    .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       if (!ctx.authSession?.user.id) return false
 
@@ -290,7 +290,7 @@ export const chatRouter = createTRPCRouter({
         .select()
         .from(chat)
         .where(and(
-          eq(chat.id, input.chatId),
+          eq(chat.id, input.id),
           eq(chat.owner, ctx.authSession.user.id)
         ))
 
