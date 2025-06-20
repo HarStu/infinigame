@@ -48,7 +48,7 @@ export function GenGameButton() {
     "Prob latent space...",
     "Meeting characters...",
     "Thinking hard...",
-    "Backpropogating...",
+    "Backpropagating...",
     "Redoing it better...",
     "Saying 'yes, and'...",
     "Acting lessons...",
