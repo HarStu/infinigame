@@ -277,5 +277,24 @@ export const chatRouter = createTRPCRouter({
         .returning()
 
       return chatUpdateRes
+    }),
+
+  checkOwnership: protectedProcedure
+    .input(z.object({ chatId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      if (!ctx.authSession?.user.id) return false
+
+      const isOwner = await ctx.db
+        .select()
+        .from(chat)
+        .where(and(
+          eq(chat.id, input.chatId),
+          eq(chat.owner, ctx.authSession.user.id)
+        ))
+
+      if (isOwner.length > 0) {
+        return true
+      } else
+        return false
     })
 })
