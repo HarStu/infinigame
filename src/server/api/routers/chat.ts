@@ -116,7 +116,7 @@ export const chatRouter = createTRPCRouter({
       }
     }),
 
-  startGameGen: publicProcedure
+  startGameGen: protectedProcedure
     .mutation(async ({ ctx }) => {
       // Create a new gameId
       const newGameId = randomUUID()
@@ -298,5 +298,17 @@ export const chatRouter = createTRPCRouter({
         return true
       } else
         return false
+    }),
+
+  getRandomGame: publicProcedure
+    .query(async ({ ctx }) => {
+      const gameRes = await ctx.db
+        .select()
+        .from(game)
+        .where(isNotNull(game.name))
+        .orderBy(sql`random()`)
+        .limit(1)
+
+      return gameRes[0]
     })
 })
