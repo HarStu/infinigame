@@ -8,7 +8,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   // if chat isn't unowned or owned by the current user,
   // we 404 here
   const isOwner = await api.chat.checkOwnership({ id })
-  if (!isOwner) {
+  const chatInfo = await api.chat.getChat({ id })
+
+  console.log(`Owner: ${isOwner}`)
+
+  if (!isOwner && chatInfo.owner !== null) {
     return (
       <div className="flex flex-col justify-center items-center">
         <div className="font-bold">
